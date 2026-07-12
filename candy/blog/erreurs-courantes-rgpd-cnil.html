@@ -1,0 +1,337 @@
+<!-- erreurs-courantes-rgpd-cnil.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erreurs RGPD Santé : Évitez les Pièges CNIL | S@FE Candy</title>
+    <meta name="description" content="Découvrez les 5 erreurs fréquentes en matière de RGPD dans les cabinets médicaux et comment les éviter avec C@NDY. Conformité CNIL et protection des données.">
+    <meta name="keywords" content="RGPD santé, CNIL, cabinet médical, données patients, conformité, sécurité sanitaire">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Erreurs RGPD Santé : Évitez les Pièges CNIL">
+    <meta property="og:description" content="Vos données patients sont-elles vraiment protégées ? Découvrez les erreurs à éviter absolument.">
+    <meta property="og:url" content="https://www.safe-digitalisation.fr/blog/erreurs-courantes-rgpd-cnil">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Erreurs courantes du RGPD/CNIL dans le secteur de la santé",
+      "author": { "@type": "Organization", "name": "S@FE" },
+      "publisher": { "@type": "Organization", "name": "S@FE", "logo": "https://www.safe-digitalisation.fr/logo.png" },
+      "datePublished": "2026-06-18",
+      "mainEntityOfPage": "https://www.safe-digitalisation.fr/blog/erreurs-courantes-rgpd-cnil"
+    }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-pink: #f8bbd0;
+            --secondary-pink: #fce4ec;
+            --accent-prune: #880e4f;
+            --accent-prune-light: #ad1457;
+            --text-dark: #333333;
+            --text-light: #555555;
+            --white: #ffffff;
+            --bg-soft: #fff0f5;
+            --border-radius: 16px;
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-sans: 'DM Sans', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-soft);
+            color: var(--text-dark);
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: var(--white);
+            box-shadow: 0 2px 15px rgba(136, 14, 79, 0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-prune);
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--accent-prune); }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            padding: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        .breadcrumb a { color: var(--accent-prune); text-decoration: none; }
+
+        /* Main Content Grid */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        /* Article Styles */
+        article {
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid rgba(248, 187, 208, 0.3);
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: 2.8rem;
+            color: var(--accent-prune);
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .meta-tags {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        .badge {
+            background: var(--secondary-pink);
+            color: var(--accent-prune);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            color: var(--accent-prune);
+            margin-top: 2.5rem;
+            border-bottom: 2px solid var(--primary-pink);
+            padding-bottom: 10px;
+        }
+
+        p { margin-bottom: 1.5rem; font-size: 1.1rem; }
+
+        .warning-box {
+            background: var(--secondary-pink);
+            border-left: 5px solid var(--accent-prune);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        .warning-box strong { color: var(--accent-prune); }
+
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; }
+
+        /* Sidebar */
+        aside {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .sidebar-widget {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-top: 4px solid var(--primary-pink);
+        }
+
+        .sidebar-title {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            color: var(--accent-prune);
+            margin-bottom: 15px;
+        }
+
+        .cta-btn {
+            display: block;
+            background: linear-gradient(135deg, var(--accent-prune) 0%, var(--accent-prune-light) 100%);
+            color: var(--white);
+            text-align: center;
+            padding: 15px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(136, 14, 79, 0.2);
+        }
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(136, 14, 79, 0.3);
+        }
+
+        .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag {
+            background: var(--bg-soft);
+            color: var(--accent-prune);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--accent-prune);
+            color: var(--white);
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .grid-layout { grid-template-columns: 1fr; }
+            aside { position: static; order: 2; margin-top: 30px; }
+            article { order: 1; }
+            h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container nav-content">
+        <a href="/" class="logo">S@FE <span style="font-family:var(--font-sans); font-weight:400; color:#555">Candy</span></a>
+        <nav class="nav-links">
+            <a href="/">Accueil</a>
+            <a href="/blog">Blog</a>
+            <a href="/contact">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <div class="breadcrumb">
+        <a href="/">Accueil</a> / <a href="/blog">Blog</a> / Erreurs RGPD
+    </div>
+
+    <div class="grid-layout">
+        <article>
+            <div class="meta-tags">
+                <span class="badge">Conformité</span>
+                <span>RGPD • CNIL • Santé</span>
+                <span>• 5 min de lecture</span>
+            </div>
+            <h1>Erreurs courantes du RGPD/CNIL à éviter dans votre cabinet</h1>
+            
+            <p>La protection des données de santé est un enjeu majeur pour les professionnels de santé. Pourtant, même les cabinets les plus rigoureux commettent des erreurs involontaires qui peuvent entraîner des sanctions de la CNIL ou, plus grave, une perte de confiance de vos patients.</p>
+
+            <div class="warning-box">
+                <strong>⚠️ Attention :</strong> Une faille de sécurité ou un non-respect du RGPD peut entraîner des amendes allant jusqu'à 20 millions d'euros ou 4% du chiffre d'affaires mondial.
+            </div>
+
+            <h2>1. L'absence de registre des traitements</h2>
+            <p>Le RGPD impose de tenir à jour un registre des activités de traitement. Beaucoup de cabinets l'ignorent, pensant que c'est réservé aux grandes structures. Or, dès que vous collectez des données (nom, prénom, historique médical), vous êtes concerné.</p>
+            <p><strong>La solution :</strong> Utilisez un outil comme C@NDY qui génère automatiquement ce registre en fonction de vos flux de données (prise de rendez-vous, dossier patient, facturation).</p>
+
+            <h2>2. Le stockage non sécurisé des données</h2>
+            <p>Utiliser une clé USB, un disque dur externe ou un cloud grand public (comme un compte Gmail personnel) pour stocker des dossiers patients est une violation flagrante du RGPD. Les données de santé doivent être hébergées sur des serveurs certifiés <strong>HDS (Hébergement Données de Santé)</strong>.</p>
+            <ul>
+                <li>Interdiction des solutions non certifiées.</li>
+                <li>Obligation de chiffrement des données au repos et en transit.</li>
+                <li>Contrôle strict des accès (authentification forte).</li>
+            </ul>
+
+            <h2>3. L'oubli du droit à l'oubli</h2>
+            <p>Un patient peut demander la suppression de ses données à tout moment (sauf obligations légales de conservation, ex: 20 ans pour les dossiers médicaux). Beaucoup de cabinets ignorent cette procédure ou ne savent pas comment l'appliquer techniquement.</p>
+
+            <h2>4. Le manque de formation du personnel</h2>
+            <p>Le facteur humain reste le maillon faible. Un secrétariat qui envoie un email avec les pièces jointes de 50 patients en "copie visible" ou qui laisse un ordinateur déverrouillé expose le cabinet à des risques majeurs.</p>
+
+            <h2>Comment C@NDY vous protège ?</h2>
+            <p>Notre CRM intègre nativement les fonctionnalités RGPD : chiffrement HDS, gestion des consentements, traçabilité des accès et registre automatique. Ne prenez pas de risques avec la vie privée de vos patients.</p>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="https://sebastien-safe.github.io/candy/Candy/" class="cta-btn">Configurer votre conformité RGPD avec C@NDY</a>
+            </div>
+        </article>
+
+        <aside>
+            <div class="sidebar-widget">
+                <h3 class="sidebar-title">Besoin d'aide ?</h3>
+                <p>Ne restez pas seul face à la conformité. Notre équipe vous accompagne.</p>
+                <a href="https://sebastien-safe.github.io/candy/Candy/" class="cta-btn">Essayer C@NDY</a>
+            </div>
+
+            <div class="sidebar-widget">
+                <h3 class="sidebar-title">Articles connexes</h3>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="color:var(--text-dark); text-decoration:none;">📄 Audit DPI : où en êtes-vous ?</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color:var(--text-dark); text-decoration:none;">🔒 Certification HDS : le guide complet</a></li>
+                    <li><a href="#" style="color:var(--text-dark); text-decoration:none;">🤖 IA Médicale : la loi européenne</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-widget">
+                <h3 class="sidebar-title">Mots-clés</h3>
+                <div class="tag-cloud">
+                    <a href="#" class="tag">RGPD</a>
+                    <a href="#" class="tag">CNIL</a>
+                    <a href="#" class="tag">Santé</a>
+                    <a href="#" class="tag">Conformité</a>
+                    <a href="#" class="tag">Données Patients</a>
+                </div>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2026 S@FE Digitalisation - Tous droits réservés.</p>
+        <p><a href="#" style="color:white; text-decoration:underline;">Mentions Légales</a> | <a href="#" style="color:white; text-decoration:underline;">Politique de Confidentialité</a></p>
+    </div>
+</footer>
+
+</body>
+</html>

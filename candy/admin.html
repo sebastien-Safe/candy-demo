@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>C@NDY — Administration</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#C4717A">
+<script src="mock-data.js"></script>
+<script src="supabase.mock.js"></script>
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rose:#F2D7D9;--rose-deep:#E8BFC2;--rose-light:#FBF0F1;
+  --cerise:#C4717A;--cerise-2:#A85860;
+  --blanc:#FEFAF9;--ardoise:#3D2B2D;--ardoise-2:#5C3F42;
+  --mut:#8C6A6D;--sauge:#5C7D60;--alert:#C0392B;
+  --line:rgba(61,43,45,.1);--line-2:rgba(61,43,45,.05);
+  --ff-disp:'DM Serif Display',serif;--fb:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--rose-light);color:var(--ardoise);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(254,250,249,.94);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+  padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-brand{font-family:var(--ff-disp);font-size:1.15rem;color:var(--ardoise)}
+.nav-brand em{color:var(--cerise);font-style:normal}
+.nav-badge{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--sauge);color:#fff;padding:3px 8px;border-radius:999px;margin-left:6px}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-user{font-size:.82rem;color:var(--mut)}
+.nav-user strong{color:var(--ardoise)}
+.btn-nav{font-size:.78rem;color:var(--mut);background:none;border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;cursor:pointer;transition:all .2s}
+.btn-nav:hover{border-color:var(--cerise);color:var(--cerise)}
+
+/* ── PAGE ── */
+.page{max-width:1000px;margin:0 auto;padding:28px 20px 80px}
+
+/* ── ALERT RGPD ── */
+.rgpd-notice{
+  background:rgba(92,125,96,.08);border:1px solid rgba(92,125,96,.25);
+  border-radius:12px;padding:14px 18px;margin-bottom:24px;
+  display:flex;align-items:flex-start;gap:12px;font-size:.84rem;color:var(--ardoise-2);
+  line-height:1.55;
+}
+.rgpd-notice .ico{font-size:1.2rem;flex-shrink:0;margin-top:1px}
+.rgpd-notice strong{color:var(--sauge)}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:28px}
+.stat-card{background:var(--blanc);border:1px solid var(--line);border-radius:12px;
+  padding:16px;text-align:center}
+.stat-val{font-family:var(--ff-disp);font-size:2rem;color:var(--ardoise);line-height:1}
+.stat-label{font-size:.72rem;color:var(--mut);margin-top:5px}
+.stat-note{font-size:.65rem;color:var(--mut);margin-top:3px;opacity:.7}
+
+/* ── PANEL ── */
+.panel{background:var(--blanc);border:1px solid var(--line);border-radius:14px;
+  padding:20px 22px;margin-bottom:20px}
+.panel-header{display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.panel-title{font-family:var(--ff-disp);font-size:1rem;color:var(--ardoise)}
+.btn-add{background:var(--cerise);color:#fff;border:none;border-radius:8px;
+  padding:8px 16px;font-family:var(--fb);font-weight:600;font-size:.84rem;
+  cursor:pointer;transition:all .2s}
+.btn-add:hover{background:var(--cerise-2)}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{font-family:monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--mut);padding:8px 12px;text-align:left;border-bottom:1px solid var(--line)}
+td{padding:10px 12px;font-size:.84rem;color:var(--ardoise-2);border-bottom:1px solid var(--line-2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(61,43,45,.02)}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;font-size:.68rem;font-weight:700;
+  padding:3px 8px;border-radius:999px;letter-spacing:.04em}
+.badge-medecin{background:rgba(196,113,122,.1);color:var(--cerise-2)}
+.badge-secretaire{background:rgba(92,125,96,.1);color:var(--sauge)}
+.badge-demo{background:rgba(245,158,11,.1);color:#B45309}
+.badge-admin{background:rgba(61,43,45,.08);color:var(--ardoise)}
+.badge-actif{background:rgba(92,125,96,.12);color:var(--sauge)}
+.badge-inactif{background:rgba(192,57,43,.1);color:var(--alert)}
+
+/* ── ACTIONS ── */
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.btn-sm{font-size:.72rem;padding:4px 10px;border-radius:6px;cursor:pointer;
+  border:1px solid var(--line);background:none;color:var(--mut);transition:all .18s}
+.btn-sm:hover{border-color:var(--cerise);color:var(--cerise)}
+.btn-sm.danger{color:var(--alert);border-color:rgba(192,57,43,.3)}
+.btn-sm.danger:hover{background:rgba(192,57,43,.06)}
+
+/* ── MODAL ── */
+.modal{display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(61,43,45,.5);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-box{background:var(--blanc);border-radius:18px;padding:28px;
+  width:100%;max-width:440px;box-shadow:0 16px 48px rgba(61,43,45,.12)}
+.modal-title{font-family:var(--ff-disp);font-size:1.1rem;color:var(--ardoise);margin-bottom:18px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.7rem;font-weight:600;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--mut);margin-bottom:5px}
+.field input,.field select{width:100%;background:var(--rose-light);
+  border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;
+  font-family:var(--fb);font-size:.88rem;color:var(--ardoise);outline:none;
+  transition:border-color .2s}
+.field input:focus,.field select:focus{border-color:var(--cerise)}
+.field select option{background:var(--blanc)}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.btn-cancel{background:none;border:1px solid var(--line);border-radius:8px;
+  padding:9px 18px;cursor:pointer;font-size:.88rem;color:var(--mut);transition:all .2s}
+.btn-cancel:hover{border-color:var(--cerise);color:var(--cerise)}
+.btn-save{background:var(--cerise);color:#fff;border:none;border-radius:8px;
+  padding:9px 18px;font-family:var(--fb);font-weight:600;font-size:.88rem;cursor:pointer;transition:all .2s}
+.btn-save:hover{background:var(--cerise-2)}
+.btn-save:disabled{opacity:.4;cursor:not-allowed}
+.msg-error{background:rgba(192,57,43,.07);border:1px solid rgba(192,57,43,.2);
+  border-radius:7px;padding:8px 12px;font-size:.82rem;color:var(--alert);
+  margin-bottom:12px;display:none}
+.msg-error.show{display:block}
+
+/* ── AUDIT LOG ── */
+.log-item{padding:8px 0;border-bottom:1px solid var(--line-2);
+  display:flex;align-items:flex-start;gap:12px;font-size:.82rem}
+.log-item:last-child{border-bottom:none}
+.log-time{font-size:.72rem;color:var(--mut);white-space:nowrap;flex-shrink:0;margin-top:1px}
+.log-action{font-weight:600;color:var(--ardoise);margin-bottom:2px}
+.log-detail{font-size:.77rem;color:var(--mut)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;z-index:999;
+  background:var(--ardoise);border-radius:10px;padding:11px 18px;
+  font-size:.84rem;color:#fff;transform:translateY(20px);opacity:0;
+  transition:all .3s;pointer-events:none;max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{background:var(--sauge)}
+.toast.err{background:var(--alert)}
+
+/* ── LOADING ── */
+.spinner-sm{display:inline-block;width:16px;height:16px;
+  border:2px solid rgba(196,113,122,.2);border-top-color:var(--cerise);
+  border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:600px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .panel{padding:16px}
+  .modal-box{padding:20px}
+}
+</style>
+</head>
+<body>
+<div style="background:#fef9c3;color:#713f12;text-align:center;padding:6px;font-size:13px;font-weight:500;">
+  ⚡ Mode démonstration — Données fictives — <a href="../index.html" style="color:#713f12">Changer de mode</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div>
+    <span class="nav-brand">C<em>@</em>NDY<span class="nav-badge">Admin</span></span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-user">Connecté : <strong id="nav-email">—</strong></span>
+    <button class="btn-nav" onclick="CandyAuth.logout()">Déconnexion</button>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- NOTICE RGPD -->
+  <div class="rgpd-notice">
+    <span class="ico">🛡</span>
+    <div>
+      <strong>Espace Administration — Accès restreint RGPD</strong><br>
+      Cet espace vous permet de gérer les comptes utilisateurs et de consulter des statistiques
+      <strong>anonymisées</strong>. Conformément au RGPD et à votre rôle d'administrateur,
+      vous n'avez <strong>aucun accès aux données médicales</strong> des patients
+      (dossiers, consultations, ordonnances). Toutes vos actions sont tracées.
+    </div>
+  </div>
+
+  <!-- STATS ANONYMES -->
+  <div class="stats-grid" id="stats-grid">
+    <div class="stat-card"><span class="spinner-sm"></span></div>
+  </div>
+
+  <!-- UTILISATEURS -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">👤 Comptes utilisateurs</div>
+      <button class="btn-add" onclick="openModalCreer()">+ Créer un compte</button>
+    </div>
+    <div class="table-wrap">
+      <table id="users-table">
+        <thead>
+          <tr>
+            <th>Prénom / Nom</th>
+            <th>E-mail</th>
+            <th>Rôle</th>
+            <th>Statut</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody">
+          <tr><td colspan="6"><span class="spinner-sm"></span> Chargement…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AUDIT LOG -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">📋 Journal des actions (30 dernières)</div>
+    </div>
+    <div id="audit-list">
+      <span class="spinner-sm"></span> Chargement…
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODALE CRÉER COMPTE -->
+<div class="modal" id="modal-creer">
+  <div class="modal-box">
+    <div class="modal-title">+ Créer un compte</div>
+    <div class="msg-error" id="creer-error"></div>
+    <div class="field">
+      <label>Prénom</label>
+      <input id="c-prenom" type="text" placeholder="Prénom">
+    </div>
+    <div class="field">
+      <label>Nom</label>
+      <input id="c-nom" type="text" placeholder="Nom">
+    </div>
+    <div class="field">
+      <label>E-mail *</label>
+      <input id="c-email" type="email" placeholder="prenom.nom@cabinet.fr">
+    </div>
+    <div class="field">
+      <label>Mot de passe temporaire *</label>
+      <div style="display:flex;gap:8px">
+        <input id="c-password" type="text" placeholder="Minimum 8 caractères" style="flex:1">
+        <button class="btn-sm" onclick="genPassword()" style="flex-shrink:0;padding:6px 10px">🔀</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Rôle *</label>
+      <select id="c-role">
+        <option value="medecin">👨‍⚕️ Médecin</option>
+        <option value="secretaire">📋 Secrétaire</option>
+        <option value="medecin_demo">🎯 Médecin démo (commercialisation)</option>
+      </select>
+    </div>
+    <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);
+      border-radius:8px;padding:10px 12px;font-size:.78rem;color:#92400e;margin-bottom:14px">
+      ⚠️ Le médecin démo n'aura accès qu'aux 5 dossiers patients fictifs.
+      Il ne peut pas consulter de données réelles.
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-creer')">Annuler</button>
+      <button class="btn-save" id="btn-creer" onclick="creerCompte()">Créer le compte</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE MODIFIER RÔLE -->
+<div class="modal" id="modal-role">
+  <div class="modal-box">
+    <div class="modal-title">Modifier le rôle</div>
+    <div class="msg-error" id="role-error"></div>
+    <input type="hidden" id="role-user-id">
+    <div style="margin-bottom:14px;font-size:.85rem;color:var(--mut)">
+      Utilisateur : <strong id="role-user-name" style="color:var(--ardoise)">—</strong>
+    </div>
+    <div class="field">
+      <label>Nouveau rôle</label>
+      <select id="r-role">
+        <option value="medecin">👨‍⚕️ Médecin</option>
+        <option value="secretaire">📋 Secrétaire</option>
+        <option value="medecin_demo">🎯 Médecin démo</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-role')">Annuler</button>
+      <button class="btn-save" onclick="sauvegarderRole()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE RÉINITIALISER MOT DE PASSE -->
+<div class="modal" id="modal-reset-pwd">
+  <div class="modal-box">
+    <div class="modal-title">🔑 Réinitialiser le mot de passe</div>
+    <div class="msg-error" id="reset-error"></div>
+    <input type="hidden" id="reset-user-id">
+    <div style="margin-bottom:14px;font-size:.85rem;color:var(--mut)">
+      Utilisateur : <strong id="reset-user-name" style="color:var(--ardoise)">—</strong><br>
+      <span id="reset-user-email" style="font-size:.8rem">—</span>
+    </div>
+    <div class="field">
+      <label>Nouveau mot de passe</label>
+      <div style="display:flex;gap:8px">
+        <input id="reset-password" type="text" placeholder="Minimum 8 caractères" style="flex:1">
+        <button class="btn-sm" onclick="genResetPassword()" style="flex-shrink:0;padding:6px 10px">🔀</button>
+      </div>
+    </div>
+    <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);
+      border-radius:8px;padding:10px 12px;font-size:.78rem;color:#92400e;margin-bottom:14px">
+      ⚠️ Réservé aux comptes médecin et secrétaire. L'ancien mot de passe sera immédiatement invalidé.
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('modal-reset-pwd')">Annuler</button>
+      <button class="btn-save" id="btn-reset-pwd" onclick="confirmerResetPwd()">Réinitialiser</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── INIT ──
+(async () => {
+  const ok = await CandyAuth.requireRole('admin_crm');
+  if (!ok) return;
+
+  const profile = await CandyAuth.getProfile();
+  document.getElementById('nav-email').textContent = profile?.email || '—';
+
+  await Promise.all([chargerStats(), chargerUsers(), chargerAudit()]);
+})();
+
+const sb = CandyAuth.getClient();
+
+// ── STATS ANONYMISÉES ──
+async function chargerStats() {
+  const { data } = await sb.from('v_stats_candy').select('*').single();
+  if (!data) return;
+
+  document.getElementById('stats-grid').innerHTML = [
+    { val: data.total_patients_reels,  label: 'Patients réels',     note: 'données médicales protégées' },
+    { val: data.total_patients_demo,   label: 'Patients démo',      note: 'accès médecin démo' },
+    { val: data.total_consultations,   label: 'Consultations',      note: 'total historique' },
+    { val: data.total_ordonnances,     label: 'Ordonnances',        note: 'total émises' },
+    { val: data.rdv_a_venir,           label: 'RDV planifiés',      note: 'agenda' },
+    { val: data.utilisateurs_actifs,   label: 'Utilisateurs actifs',note: '' },
+  ].map(s => `
+    <div class="stat-card">
+      <div class="stat-val">${s.val ?? '—'}</div>
+      <div class="stat-label">${s.label}</div>
+      ${s.note ? `<div class="stat-note">${s.note}</div>` : ''}
+    </div>`).join('');
+}
+
+// ── UTILISATEURS ──
+let allUsers = [];
+
+async function chargerUsers() {
+  const { data, error } = await sb.from('profiles')
+    .select('id,email,prenom,nom,role,actif,created_at')
+    .order('created_at', { ascending: false });
+
+  if (error) { toast('Erreur chargement utilisateurs', 'err'); return; }
+  allUsers = data || [];
+  renderUsers();
+}
+
+function renderUsers() {
+  const tbody = document.getElementById('users-tbody');
+  if (!allUsers.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--mut);padding:20px">Aucun utilisateur.</td></tr>';
+    return;
+  }
+
+  const roleLabels = {
+    admin_crm:    '<span class="badge badge-admin">⚙️ Admin CRM</span>',
+    medecin:      '<span class="badge badge-medecin">👨‍⚕️ Médecin</span>',
+    secretaire:   '<span class="badge badge-secretaire">📋 Secrétaire</span>',
+    medecin_demo: '<span class="badge badge-demo">🎯 Démo</span>',
+  };
+
+  tbody.innerHTML = allUsers.map(u => `
+    <tr>
+      <td style="font-weight:600">${esc(u.prenom || '—')} ${esc(u.nom || '')}</td>
+      <td style="color:var(--mut)">${esc(u.email)}</td>
+      <td>${roleLabels[u.role] || u.role}</td>
+      <td>${u.actif
+        ? '<span class="badge badge-actif">Actif</span>'
+        : '<span class="badge badge-inactif">Inactif</span>'}</td>
+      <td style="color:var(--mut);font-size:.78rem">${new Date(u.created_at).toLocaleDateString('fr-FR')}</td>
+      <td>
+        <div class="actions">
+          ${u.role !== 'admin_crm' ? `
+            <button class="btn-sm" onclick="openModalRole('${u.id}','${esc(u.prenom||'')} ${esc(u.nom||'')}','${u.role}')">
+              Modifier rôle
+            </button>
+            ${['medecin','secretaire'].includes(u.role) ? `
+            <button class="btn-sm" onclick="openModalResetPwd('${u.id}','${esc(u.prenom||'')} ${esc(u.nom||'')}','${esc(u.email)}')">
+              🔑 Réinit. MDP
+            </button>` : ''}
+            <button class="btn-sm ${u.actif ? 'danger' : ''}"
+              onclick="toggleActif('${u.id}',${u.actif})">
+              ${u.actif ? 'Désactiver' : 'Réactiver'}
+            </button>` : '<span style="font-size:.75rem;color:var(--mut)">—</span>'}
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+// ── AUDIT LOG ──
+async function chargerAudit() {
+  const { data } = await sb.from('audit_logs')
+    .select('action,user_role,details,created_at')
+    .order('created_at', { ascending: false })
+    .limit(30);
+
+  const list = document.getElementById('audit-list');
+  if (!data?.length) {
+    list.innerHTML = '<div style="color:var(--mut);font-size:.84rem;padding:8px 0">Aucune action enregistrée.</div>';
+    return;
+  }
+
+  const actionLabels = {
+    LOGIN:       '🔐 Connexion',
+    LOGOUT:      '🚪 Déconnexion',
+    CREATE_USER: '👤 Création compte',
+    TOGGLE_ACTIF:'⚙️ Changement statut',
+    CHANGE_ROLE: '🎭 Changement rôle',
+  };
+
+  list.innerHTML = data.map(l => {
+    const label   = actionLabels[l.action] || l.action;
+    const details = l.details ? Object.entries(l.details)
+      .filter(([k]) => k !== 'created_by')
+      .map(([k,v]) => `${k}: ${v}`).join(' · ') : '';
+    return `
+      <div class="log-item">
+        <div class="log-time">${new Date(l.created_at).toLocaleString('fr-FR', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
+        <div>
+          <div class="log-action">${label} <span style="font-size:.72rem;color:var(--mut)">[${l.user_role}]</span></div>
+          ${details ? `<div class="log-detail">${esc(details)}</div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── CRÉER UN COMPTE ──
+function openModalCreer() {
+  document.getElementById('c-prenom').value   = '';
+  document.getElementById('c-nom').value      = '';
+  document.getElementById('c-email').value    = '';
+  document.getElementById('c-password').value = '';
+  document.getElementById('c-role').value     = 'medecin';
+  document.getElementById('creer-error').classList.remove('show');
+  document.getElementById('modal-creer').classList.add('show');
+}
+
+function genPassword() {
+  const chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$';
+  let pwd = '';
+  for (let i = 0; i < 12; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('c-password').value = pwd;
+}
+
+async function creerCompte() {
+  const email    = document.getElementById('c-email').value.trim();
+  const password = document.getElementById('c-password').value;
+  const prenom   = document.getElementById('c-prenom').value.trim();
+  const nom      = document.getElementById('c-nom').value.trim();
+  const role     = document.getElementById('c-role').value;
+  const errEl    = document.getElementById('creer-error');
+  const btn      = document.getElementById('btn-creer');
+
+  errEl.classList.remove('show');
+  if (!email || !password) { errEl.textContent = 'E-mail et mot de passe requis.'; errEl.classList.add('show'); return; }
+  if (password.length < 8) { errEl.textContent = 'Mot de passe trop court (8 caractères min).'; errEl.classList.add('show'); return; }
+
+  btn.disabled = true; btn.textContent = 'Création…';
+
+  try {
+    const session     = await CandyAuth.getSession();
+    const accessToken = session?.access_token;
+
+    const resp = await fetch(`${CANDY_SUPABASE_URL}/functions/v1/candy-admin-create-user`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
+      body: JSON.stringify({ email, password, prenom, nom, role }),
+    });
+    const result = await resp.json();
+
+    if (!resp.ok || result.error) {
+      throw new Error(result.error || 'Erreur création');
+    }
+
+    closeModal('modal-creer');
+    toast(`✅ Compte créé — ${email} (${role})`, 'ok');
+    await chargerUsers();
+    await chargerAudit();
+
+    // Afficher les identifiants
+    setTimeout(() => {
+      if (confirm(`Compte créé avec succès.\n\nE-mail : ${email}\nMot de passe : ${password}\n\nCopier dans le presse-papiers ?`)) {
+        navigator.clipboard.writeText(`E-mail : ${email}\nMot de passe : ${password}`);
+      }
+    }, 300);
+
+  } catch(e) {
+    errEl.textContent = 'Erreur : ' + e.message;
+    errEl.classList.add('show');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Créer le compte';
+  }
+}
+
+// ── RÉINITIALISER MOT DE PASSE (medecin + secretaire uniquement) ──
+function openModalResetPwd(userId, userName, userEmail) {
+  document.getElementById('reset-user-id').value      = userId;
+  document.getElementById('reset-user-name').textContent  = userName || '—';
+  document.getElementById('reset-user-email').textContent = userEmail || '';
+  document.getElementById('reset-password').value     = '';
+  document.getElementById('reset-error').classList.remove('show');
+  document.getElementById('modal-reset-pwd').classList.add('show');
+}
+
+function genResetPassword() {
+  const chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$';
+  let pwd = '';
+  for (let i = 0; i < 12; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
+  document.getElementById('reset-password').value = pwd;
+}
+
+async function confirmerResetPwd() {
+  const userId   = document.getElementById('reset-user-id').value;
+  const password = document.getElementById('reset-password').value;
+  const errEl    = document.getElementById('reset-error');
+  const btn      = document.getElementById('btn-reset-pwd');
+
+  errEl.classList.remove('show');
+  if (!password || password.length < 8) {
+    errEl.textContent = 'Mot de passe trop court (8 caractères min).';
+    errEl.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Réinitialisation…';
+
+  try {
+    const session     = await CandyAuth.getSession();
+    const accessToken = session?.access_token;
+
+    const resp = await fetch(`${CANDY_SUPABASE_URL}/functions/v1/candy-admin-create-user`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${accessToken}` },
+      body: JSON.stringify({ action: 'reset_password', user_id: userId, new_password: password }),
+    });
+    const result = await resp.json();
+
+    if (!resp.ok || result.error) {
+      const errMap = {
+        reset_not_allowed_for_role: "Réinitialisation non autorisée pour ce rôle.",
+        user_not_found: "Utilisateur introuvable.",
+        password_too_short: "Mot de passe trop court.",
+      };
+      throw new Error(errMap[result.error] || result.error || 'Erreur');
+    }
+
+    const email = document.getElementById('reset-user-email').textContent;
+    closeModal('modal-reset-pwd');
+    toast('✅ Mot de passe réinitialisé', 'ok');
+    await chargerAudit();
+
+    setTimeout(() => {
+      if (confirm(`Mot de passe réinitialisé.\n\nE-mail : ${email}\nNouveau mot de passe : ${password}\n\nCopier dans le presse-papiers ?`)) {
+        navigator.clipboard.writeText(`E-mail : ${email}\nMot de passe : ${password}`);
+      }
+    }, 300);
+
+  } catch(e) {
+    errEl.textContent = 'Erreur : ' + e.message;
+    errEl.classList.add('show');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Réinitialiser';
+  }
+}
+
+// ── MODIFIER RÔLE ──
+function openModalRole(userId, userName, currentRole) {
+  document.getElementById('role-user-id').value     = userId;
+  document.getElementById('role-user-name').textContent = userName || '—';
+  document.getElementById('r-role').value           = currentRole;
+  document.getElementById('role-error').classList.remove('show');
+  document.getElementById('modal-role').classList.add('show');
+}
+
+async function sauvegarderRole() {
+  const userId = document.getElementById('role-user-id').value;
+  const role   = document.getElementById('r-role').value;
+  const errEl  = document.getElementById('role-error');
+
+  try {
+    const { error } = await sb.from('profiles').update({ role }).eq('id', userId);
+    if (error) throw new Error(error.message);
+
+    // Logger l'action
+    await sb.rpc('log_action', {
+      p_action: 'CHANGE_ROLE', p_table_name: 'profiles',
+      p_record_id: userId, p_details: { new_role: role }
+    });
+
+    closeModal('modal-role');
+    toast('✅ Rôle mis à jour', 'ok');
+    await chargerUsers();
+    await chargerAudit();
+  } catch(e) {
+    errEl.textContent = 'Erreur : ' + e.message;
+    errEl.classList.add('show');
+  }
+}
+
+// ── ACTIVER / DÉSACTIVER ──
+async function toggleActif(userId, currentActif) {
+  const action = currentActif ? 'Désactiver' : 'Réactiver';
+  if (!confirm(`${action} ce compte ?`)) return;
+
+  try {
+    const { error } = await sb.from('profiles').update({ actif: !currentActif }).eq('id', userId);
+    if (error) throw new Error(error.message);
+
+    await sb.rpc('log_action', {
+      p_action: 'TOGGLE_ACTIF', p_table_name: 'profiles',
+      p_record_id: userId, p_details: { actif: !currentActif }
+    });
+
+    toast(`✅ Compte ${currentActif ? 'désactivé' : 'réactivé'}`, 'ok');
+    await chargerUsers();
+    await chargerAudit();
+  } catch(e) {
+    toast('Erreur : ' + e.message, 'err');
+  }
+}
+
+// ── UTILS ──
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Fermer les modales en cliquant sur le fond
+document.querySelectorAll('.modal').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+});
+</script>
+</body>
+</html>

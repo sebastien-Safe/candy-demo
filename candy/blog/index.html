@@ -1,0 +1,366 @@
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:#F7F2ED;color:#2C2018;}
+.display{font-family:'Cormorant Garamond',serif;}
+
+.sc-header{background:#2C2018;border-bottom:3px solid #C9877A;}
+.sc-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;}
+.sc-logo-icon{width:38px;height:38px;background:#C9877A;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.sc-logo-text{color:#FDFBF9;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-left:10px;}
+.sc-logo-text span{color:#E8B4A0;}
+.sc-logo-sub{color:#9C8A82;font-size:11px;display:block;margin-top:1px;font-family:'DM Sans',sans-serif;font-weight:300;}
+.sc-logo-wrap{display:flex;align-items:center;}
+.sc-nav-links{display:flex;gap:24px;}
+.sc-nav-links a{color:#9C8A82;font-size:13px;text-decoration:none;cursor:pointer;font-weight:400;}
+.sc-nav-links a:hover{color:#E8B4A0;}
+.sc-nav-cta{background:#C9877A;color:#FDFBF9;font-size:12px;font-weight:500;padding:8px 18px;border-radius:50px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;}
+.sc-nav-cta:hover{background:#B5726A;}
+
+.sc-hero{background:linear-gradient(160deg,#2C2018 0%,#3D2C22 60%,#4a3340 100%);padding:44px 24px 36px;text-align:center;border-bottom:1px solid #3D2C22;}
+.sc-hero-badge{display:inline-block;background:rgba(201,135,122,0.18);color:#E8B4A0;font-size:11px;padding:5px 14px;border-radius:50px;margin-bottom:18px;border:1px solid rgba(201,135,122,0.35);font-weight:500;letter-spacing:.04em;}
+.sc-hero h1{font-family:'Cormorant Garamond',serif;color:#FDFBF9;font-size:32px;font-weight:600;line-height:1.25;margin-bottom:12px;}
+.sc-hero h1 span{color:#E8B4A0;}
+.sc-hero p{color:#9C8A82;font-size:13px;max-width:500px;margin:0 auto 24px;line-height:1.7;font-weight:300;}
+.sc-hero-search{display:flex;gap:8px;max-width:400px;margin:0 auto;}
+.sc-hero-search input{flex:1;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.12);color:#FDFBF9;padding:10px 14px;border-radius:10px;font-size:13px;outline:none;font-family:'DM Sans',sans-serif;}
+.sc-hero-search input::placeholder{color:#5A4A42;}
+.sc-hero-search input:focus{border-color:#C9877A;}
+.sc-hero-search button{background:#C9877A;border:none;color:#FDFBF9;padding:10px 18px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;}
+
+.sc-cats{display:flex;gap:8px;padding:14px 24px;background:#FDFBF9;border-bottom:1px solid #E8DFDB;overflow-x:auto;}
+.sc-cat{background:transparent;border:1.5px solid #E0D5D0;color:#9C8A82;font-size:12px;padding:5px 14px;border-radius:50px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;font-weight:400;}
+.sc-cat:hover{background:#F5EAE8;border-color:#C9877A;color:#C9877A;}
+.sc-cat.active{background:#C9877A;border-color:#C9877A;color:#FDFBF9;font-weight:500;}
+
+.sc-main{padding:28px 24px;background:#F7F2ED;}
+
+.sc-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
+.sc-stat{background:#FDFBF9;border:1px solid #E8DFDB;border-radius:14px;padding:16px;text-align:center;}
+.sc-stat-num{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:#C9877A;display:block;}
+.sc-stat-label{font-size:11px;color:#9C8A82;margin-top:3px;line-height:1.4;font-weight:400;}
+
+.sc-section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.sc-section-title h2{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#2C2018;}
+.sc-section-title a{font-size:12px;color:#C9877A;cursor:pointer;font-weight:500;}
+
+.sc-featured{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px;}
+.sc-card{background:#FDFBF9;border:1px solid #E8DFDB;border-radius:16px;overflow:hidden;cursor:pointer;transition:box-shadow .2s,transform .15s,border-color .2s;}
+.sc-card:hover{box-shadow:0 6px 24px rgba(125,90,110,.12);transform:translateY(-2px);border-color:#D4C5C0;}
+.sc-card-img{height:130px;display:flex;align-items:center;justify-content:center;position:relative;}
+.sc-card-img-rose{background:linear-gradient(135deg,#3D2018 0%,#5A2C22 100%);}
+.sc-card-img-prune{background:linear-gradient(135deg,#2C1828 0%,#4a2840 100%);}
+.sc-card-img-menthe{background:linear-gradient(135deg,#182C28 0%,#1e3d38 100%);}
+.sc-card-img-peche{background:linear-gradient(135deg,#3D2A18 0%,#5A3C22 100%);}
+.sc-card-img-sable{background:linear-gradient(135deg,#2C2018 0%,#3D3028 100%);}
+.sc-card-icon-wrap{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.15);}
+.sc-card-tag{position:absolute;top:10px;left:10px;font-size:10px;padding:3px 10px;border-radius:50px;font-weight:500;font-family:'DM Sans',sans-serif;letter-spacing:.04em;}
+.sc-card-tag.rose{background:rgba(201,135,122,.22);color:#E8B4A0;border:1px solid rgba(201,135,122,.35);}
+.sc-card-tag.teal{background:rgba(168,197,190,.22);color:#A8C5BE;border:1px solid rgba(168,197,190,.35);}
+.sc-card-tag.prune{background:rgba(125,90,110,.22);color:#C4A0B8;border:1px solid rgba(125,90,110,.35);}
+.sc-card-tag.peche{background:rgba(232,180,160,.22);color:#E8B4A0;border:1px solid rgba(232,180,160,.35);}
+.sc-card-body{padding:14px 16px 16px;}
+.sc-card-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.sc-card-date{font-size:11px;color:#B8A9A5;}
+.sc-card-dot{width:3px;height:3px;border-radius:50%;background:#D4C5C0;}
+.sc-card-read{font-size:11px;color:#B8A9A5;}
+.sc-card h3{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:#2C2018;line-height:1.4;margin-bottom:8px;}
+.sc-card p{font-size:12px;color:#6B5B55;line-height:1.6;margin-bottom:12px;font-weight:300;}
+.sc-card-footer{display:flex;align-items:center;justify-content:space-between;}
+.sc-card-author{display:flex;align-items:center;gap:6px;}
+.sc-card-avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;font-family:'Cormorant Garamond',serif;}
+.sc-card-aname{font-size:11px;color:#9C8A82;}
+.sc-read-btn{font-size:12px;color:#C9877A;font-weight:500;display:flex;align-items:center;gap:4px;}
+
+.sc-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
+
+.sc-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.sc-list-item{display:flex;gap:12px;background:#FDFBF9;border:1px solid #E8DFDB;border-radius:12px;padding:14px;cursor:pointer;align-items:flex-start;transition:border-color .2s,box-shadow .2s;}
+.sc-list-item:hover{border-color:#D4C5C0;box-shadow:0 4px 16px rgba(125,90,110,.08);}
+.sc-list-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sc-list-content h4{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:#2C2018;margin-bottom:4px;}
+.sc-list-content p{font-size:11px;color:#6B5B55;line-height:1.5;font-weight:300;}
+.sc-list-meta{font-size:10px;color:#B8A9A5;margin-top:6px;font-weight:400;}
+
+.sc-newsletter{background:#2C2018;border:1px solid #3D2C22;border-radius:16px;padding:28px;text-align:center;margin-bottom:28px;}
+.sc-newsletter h3{font-family:'Cormorant Garamond',serif;color:#FDFBF9;font-size:20px;font-weight:600;margin-bottom:6px;}
+.sc-newsletter p{color:#9C8A82;font-size:12px;margin-bottom:18px;font-weight:300;}
+.sc-newsletter-form{display:flex;gap:8px;max-width:380px;margin:0 auto;}
+.sc-newsletter-form input{flex:1;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);color:#FDFBF9;padding:9px 12px;border-radius:50px;font-size:12px;outline:none;font-family:'DM Sans',sans-serif;}
+.sc-newsletter-form input::placeholder{color:#5A4A42;}
+.sc-newsletter-form button{background:#C9877A;border:none;color:#FDFBF9;padding:9px 18px;border-radius:50px;cursor:pointer;font-size:12px;font-weight:500;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+
+.sc-footer{background:#2C2018;border-top:1px solid #3D2C22;padding:20px 24px;}
+.sc-footer-row{display:flex;align-items:center;justify-content:space-between;}
+.sc-footer-logo{font-family:'Cormorant Garamond',serif;color:#FDFBF9;font-size:16px;font-weight:600;}
+.sc-footer-logo span{color:#E8B4A0;}
+.sc-footer-links{display:flex;gap:16px;}
+.sc-footer-links a{color:#5A4A42;font-size:11px;cursor:pointer;}
+.sc-footer-links a:hover{color:#9C8A82;}
+.sc-footer-copy{color:#5A4A42;font-size:11px;margin-top:10px;font-weight:300;}
+.dot-sep{width:3px;height:3px;border-radius:50%;background:#3D2C22;display:inline-block;vertical-align:middle;margin:0 4px;}
+</style>
+
+<h2 class="sr-only">Blog S@fe Candy — Cybersécurité médicale, dans les couleurs S@fe Digitalisation</h2>
+
+<div class="sc-header">
+  <div class="sc-nav">
+    <div class="sc-logo-wrap">
+      <div class="sc-logo-icon">
+        <i class="ti ti-shield-lock" style="color:#FDFBF9;font-size:20px" aria-hidden="true"></i>
+      </div>
+      <div style="margin-left:10px;">
+        <span class="sc-logo-text">S<span>@</span>fe Candy</span>
+        <span class="sc-logo-sub">Cybersécurité médicale</span>
+      </div>
+    </div>
+    <div class="sc-nav-links">
+      <a>Accueil</a>
+      <a>Réglementation</a>
+      <a>Ressources</a>
+      <a>À propos</a>
+    </div>
+    <button class="sc-nav-cta">Nous contacter</button>
+  </div>
+
+  <div class="sc-hero">
+    <span class="sc-hero-badge">Spécialiste cybersécurité du secteur médical</span>
+    <h1 class="display">Protéger les données de santé,<br><span>c'est protéger des vies</span></h1>
+    <p>Analyses, bonnes pratiques et veille réglementaire pour les professionnels de la santé numérique en France et en Europe.</p>
+    <div class="sc-hero-search">
+      <input placeholder="Rechercher un article, une thématique…" />
+      <button>Rechercher</button>
+    </div>
+  </div>
+
+  <div class="sc-cats">
+    <button class="sc-cat active">Tous les articles</button>
+    <button class="sc-cat">Dispositifs médicaux</button>
+    <button class="sc-cat">RGPD Santé</button>
+    <button class="sc-cat">Hôpital & CHU</button>
+    <button class="sc-cat">IA médicale</button>
+    <button class="sc-cat">Ransomware</button>
+    <button class="sc-cat">Certification HDS</button>
+    <button class="sc-cat">IoMT</button>
+    <button class="sc-cat">NIS2</button>
+  </div>
+</div>
+
+<div class="sc-main">
+
+  <div class="sc-stats">
+    <div class="sc-stat">
+      <span class="sc-stat-num display">+380%</span>
+      <span class="sc-stat-label">Cyberattaques sur les hôpitaux depuis 2020</span>
+    </div>
+    <div class="sc-stat">
+      <span class="sc-stat-num display">14,9M€</span>
+      <span class="sc-stat-label">Coût moyen d'une violation de données de santé</span>
+    </div>
+    <div class="sc-stat">
+      <span class="sc-stat-num display">NIS2</span>
+      <span class="sc-stat-label">Directive européenne en vigueur pour le secteur médical</span>
+    </div>
+    <div class="sc-stat">
+      <span class="sc-stat-num display">HDS</span>
+      <span class="sc-stat-label">Certification hébergeur données de santé obligatoire</span>
+    </div>
+  </div>
+
+  <div class="sc-section-title">
+    <h2 class="display"><i class="ti ti-flame" style="font-size:18px;color:#C9877A;margin-right:6px;vertical-align:-3px" aria-hidden="true"></i>À la une</h2>
+    <a>Voir tous les articles →</a>
+  </div>
+  <div class="sc-featured">
+
+    <div class="sc-card" onclick="sendPrompt('Rédige l\'article complet pour le blog S@fe Candy : Ransomware à l\'hôpital – comment préparer son plan de reprise en 2026')">
+      <div class="sc-card-img sc-card-img-rose">
+        <div class="sc-card-icon-wrap" style="background:rgba(201,135,122,.25);border-color:rgba(201,135,122,.45)">
+          <i class="ti ti-virus" style="color:#E8B4A0;font-size:26px" aria-hidden="true"></i>
+        </div>
+        <span class="sc-card-tag rose">Ransomware</span>
+      </div>
+      <div class="sc-card-body">
+        <div class="sc-card-meta">
+          <span class="sc-card-date">12 juin 2026</span>
+          <span class="sc-card-dot"></span>
+          <span class="sc-card-read">8 min de lecture</span>
+        </div>
+        <h3 class="display">Ransomware à l'hôpital : préparer et tester son plan de reprise en 2026</h3>
+        <p>Après les attaques de Corbeil-Essonnes et Versailles, les établissements doivent aller au-delà du PRI classique. Segmentation, sauvegardes offline et exercices de crise.</p>
+        <div class="sc-card-footer">
+          <div class="sc-card-author">
+            <div class="sc-card-avatar" style="background:#F5EAE8;color:#C9877A;">SC</div>
+            <span class="sc-card-aname">Sarah Caron, RSSI</span>
+          </div>
+          <span class="sc-read-btn">Lire l'article <i class="ti ti-arrow-right" style="font-size:12px" aria-hidden="true"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sc-card" onclick="sendPrompt('Rédige l\'article complet pour le blog S@fe Candy : NIS2 et secteur médical – obligations et calendrier de mise en conformité')">
+      <div class="sc-card-img sc-card-img-menthe">
+        <div class="sc-card-icon-wrap" style="background:rgba(168,197,190,.25);border-color:rgba(168,197,190,.45)">
+          <i class="ti ti-certificate" style="color:#A8C5BE;font-size:26px" aria-hidden="true"></i>
+        </div>
+        <span class="sc-card-tag teal">Réglementation</span>
+      </div>
+      <div class="sc-card-body">
+        <div class="sc-card-meta">
+          <span class="sc-card-date">5 juin 2026</span>
+          <span class="sc-card-dot"></span>
+          <span class="sc-card-read">10 min de lecture</span>
+        </div>
+        <h3 class="display">NIS2 et santé : ce que chaque établissement doit avoir mis en place avant fin 2026</h3>
+        <p>La directive NIS2 s'impose aux hôpitaux, laboratoires et fournisseurs de dispositifs médicaux. Décryptage des obligations, délais et risques de sanctions.</p>
+        <div class="sc-card-footer">
+          <div class="sc-card-author">
+            <div class="sc-card-avatar" style="background:#E8F3F1;color:#5E9087;">ML</div>
+            <span class="sc-card-aname">Marc Lefebvre, juriste</span>
+          </div>
+          <span class="sc-read-btn">Lire l'article <i class="ti ti-arrow-right" style="font-size:12px" aria-hidden="true"></i></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sc-section-title">
+    <h2 class="display"><i class="ti ti-clock" style="font-size:18px;color:#C9877A;margin-right:6px;vertical-align:-3px" aria-hidden="true"></i>Derniers articles</h2>
+    <a>Voir tous →</a>
+  </div>
+  <div class="sc-grid-3">
+
+    <div class="sc-card" onclick="sendPrompt('Rédige l\'article complet pour le blog S@fe Candy : Sécuriser les dispositifs médicaux connectés IoMT en 2026')">
+      <div class="sc-card-img sc-card-img-prune" style="height:100px">
+        <div class="sc-card-icon-wrap" style="background:rgba(125,90,110,.25);border-color:rgba(125,90,110,.45);width:44px;height:44px">
+          <i class="ti ti-device-heart-monitor" style="color:#C4A0B8;font-size:22px" aria-hidden="true"></i>
+        </div>
+        <span class="sc-card-tag prune">IoMT</span>
+      </div>
+      <div class="sc-card-body">
+        <div class="sc-card-meta"><span class="sc-card-date">2 juin 2026</span><span class="sc-card-dot"></span><span class="sc-card-read">7 min</span></div>
+        <h3 class="display">IoMT : sécuriser les équipements connectés sans bloquer les soins</h3>
+        <p>Pompes à insuline, pacemakers… La surface d'attaque explose. Comment cloisonner sans nuire aux soignants.</p>
+        <div class="sc-card-footer">
+          <div class="sc-card-author">
+            <div class="sc-card-avatar" style="background:#EDE5EA;color:#7D5A6E;">AB</div>
+            <span class="sc-card-aname">Anne Bernard</span>
+          </div>
+          <span class="sc-read-btn">Lire <i class="ti ti-arrow-right" style="font-size:12px" aria-hidden="true"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sc-card" onclick="sendPrompt('Rédige l\'article complet pour le blog S@fe Candy : RGPD et données de santé – les 5 erreurs les plus fréquentes')">
+      <div class="sc-card-img sc-card-img-peche" style="height:100px">
+        <div class="sc-card-icon-wrap" style="background:rgba(232,180,160,.2);border-color:rgba(232,180,160,.4);width:44px;height:44px">
+          <i class="ti ti-lock" style="color:#E8B4A0;font-size:22px" aria-hidden="true"></i>
+        </div>
+        <span class="sc-card-tag peche">RGPD Santé</span>
+      </div>
+      <div class="sc-card-body">
+        <div class="sc-card-meta"><span class="sc-card-date">28 mai 2026</span><span class="sc-card-dot"></span><span class="sc-card-read">6 min</span></div>
+        <h3 class="display">RGPD santé : 5 erreurs qui exposent à une sanction CNIL</h3>
+        <p>Consentement implicite, durées de conservation, sous-traitants… Les pièges les plus courants décryptés.</p>
+        <div class="sc-card-footer">
+          <div class="sc-card-author">
+            <div class="sc-card-avatar" style="background:#FCF1EC;color:#C9877A;">PD</div>
+            <span class="sc-card-aname">Pierre Dumont</span>
+          </div>
+          <span class="sc-read-btn">Lire <i class="ti ti-arrow-right" style="font-size:12px" aria-hidden="true"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sc-card" onclick="sendPrompt('Rédige l\'article complet pour le blog S@fe Candy : IA médicale – risques cyber, biais et responsabilité juridique sous l\'EU AI Act')">
+      <div class="sc-card-img sc-card-img-sable" style="height:100px">
+        <div class="sc-card-icon-wrap" style="background:rgba(168,197,190,.2);border-color:rgba(168,197,190,.4);width:44px;height:44px">
+          <i class="ti ti-brain" style="color:#A8C5BE;font-size:22px" aria-hidden="true"></i>
+        </div>
+        <span class="sc-card-tag teal">IA médicale</span>
+      </div>
+      <div class="sc-card-body">
+        <div class="sc-card-meta"><span class="sc-card-date">20 mai 2026</span><span class="sc-card-dot"></span><span class="sc-card-read">9 min</span></div>
+        <h3 class="display">IA en diagnostic médical : risques cyber et EU AI Act</h3>
+        <p>Empoisonnement de données, adversarial attacks et responsabilité. Ce que l'EU AI Act impose dès 2026.</p>
+        <div class="sc-card-footer">
+          <div class="sc-card-author">
+            <div class="sc-card-avatar" style="background:#E8F3F1;color:#5E9087;">NL</div>
+            <span class="sc-card-aname">Nathalie Lebrun</span>
+          </div>
+          <span class="sc-read-btn">Lire <i class="ti ti-arrow-right" style="font-size:12px" aria-hidden="true"></i></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sc-section-title">
+    <h2 class="display"><i class="ti ti-bookmark" style="font-size:18px;color:#C9877A;margin-right:6px;vertical-align:-3px" aria-hidden="true"></i>Guides pratiques</h2>
+    <a>Voir tous →</a>
+  </div>
+  <div class="sc-list">
+
+    <div class="sc-list-item" onclick="sendPrompt('Rédige le guide complet pour S@fe Candy : Obtenir la certification HDS – étapes, délais et budget')">
+      <div class="sc-list-icon" style="background:#E8F3F1">
+        <i class="ti ti-rosette" style="color:#5E9087;font-size:20px" aria-hidden="true"></i>
+      </div>
+      <div class="sc-list-content">
+        <h4 class="display">Guide complet : obtenir la certification HDS — étapes, délais et budget</h4>
+        <p>De l'audit initial à la délivrance du certificat par un organisme accrédité COFRAC. Tout le processus détaillé pour les DSI et RSSI du secteur santé.</p>
+        <div class="sc-list-meta">Guide · 15 min · Mis à jour le 10 juin 2026</div>
+      </div>
+      <i class="ti ti-arrow-right" style="font-size:16px;color:#D4C5C0;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+    </div>
+
+    <div class="sc-list-item" onclick="sendPrompt('Rédige le guide complet pour S@fe Candy : Audit de sécurité d\'un DPI – méthodologie et outils')">
+      <div class="sc-list-icon" style="background:#EDE5EA">
+        <i class="ti ti-clipboard-list" style="color:#7D5A6E;font-size:20px" aria-hidden="true"></i>
+      </div>
+      <div class="sc-list-content">
+        <h4 class="display">Audit de sécurité d'un DPI : méthodologie pour identifier les vulnérabilités critiques</h4>
+        <p>Dossier Patient Informatisé, PACS, SIH… Comment mener un pentest adapté aux contraintes de disponibilité du milieu hospitalier.</p>
+        <div class="sc-list-meta">Guide · 12 min · Mis à jour le 3 juin 2026</div>
+      </div>
+      <i class="ti ti-arrow-right" style="font-size:16px;color:#D4C5C0;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+    </div>
+
+    <div class="sc-list-item" onclick="sendPrompt('Rédige le guide complet pour S@fe Candy : Implémenter le Zero Trust dans un réseau hospitalier')">
+      <div class="sc-list-icon" style="background:#F5EAE8">
+        <i class="ti ti-shield-check" style="color:#C9877A;font-size:20px" aria-hidden="true"></i>
+      </div>
+      <div class="sc-list-content">
+        <h4 class="display">Zero Trust en milieu hospitalier : retour d'expérience et mise en œuvre</h4>
+        <p>Micro-segmentation, authentification forte et surveillance continue dans un environnement où la disponibilité est une question de vie ou de mort.</p>
+        <div class="sc-list-meta">Guide · 11 min · Mis à jour le 28 mai 2026</div>
+      </div>
+      <i class="ti ti-arrow-right" style="font-size:16px;color:#D4C5C0;flex-shrink:0;margin-top:2px" aria-hidden="true"></i>
+    </div>
+
+  </div>
+
+  <div class="sc-newsletter">
+    <h3 class="display"><i class="ti ti-mail" style="font-size:18px;vertical-align:-3px;margin-right:8px;color:#E8B4A0" aria-hidden="true"></i>Veille cybersécurité médicale</h3>
+    <p>Chaque semaine : incidents, nouvelles réglementations et guides pratiques directement dans votre boîte mail professionnelle.</p>
+    <div class="sc-newsletter-form">
+      <input placeholder="votre@email-professionnel.fr" />
+      <button>S'abonner</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="sc-footer">
+  <div class="sc-footer-row">
+    <span class="sc-footer-logo display">S<span>@</span>fe Candy</span>
+    <div class="sc-footer-links">
+      <a>Mentions légales</a>
+      <a>Politique de confidentialité</a>
+      <a>LinkedIn</a>
+      <a>Contact</a>
+    </div>
+  </div>
+  <div class="sc-footer-copy">© 2026 S@fe Candy · Cybersécurité médicale · Tous droits réservés</div>
+</div>

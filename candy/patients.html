@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>C@NDY — Patients</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#C4717A">
+<script src="mock-data.js"></script>
+<script src="supabase.mock.js"></script>
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rose:#F2D7D9;--rose-deep:#E8BFC2;--rose-light:#FBF0F1;
+  --cerise:#C4717A;--cerise-2:#A85860;
+  --blanc:#FEFAF9;--ardoise:#3D2B2D;--ardoise-2:#5C3F42;
+  --mut:#8C6A6D;--mut-2:#5C3F42;--sauge:#5C7D60;
+  --line:rgba(61,43,45,.1);--line-2:rgba(61,43,45,.05);
+  --ff-disp:'DM Serif Display',serif;--fb:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--rose-light);color:var(--ardoise);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(254,250,249,.94);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;
+}
+.nav-brand{font-family:var(--ff-disp);font-size:1.15rem;color:var(--ardoise)}
+.nav-brand em{color:var(--cerise);font-style:normal}
+.nav-badge{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--cerise);color:#fff;padding:3px 8px;border-radius:999px;margin-left:6px}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-user{font-size:.82rem;color:var(--mut)}
+.nav-user strong{color:var(--ardoise)}
+.btn-nav{font-size:.78rem;color:var(--mut);background:none;border:1px solid var(--line);
+  border-radius:7px;padding:6px 12px;cursor:pointer;transition:all .2s}
+.btn-nav:hover{border-color:var(--cerise);color:var(--cerise)}
+.btn-nav.admin{color:var(--sauge);border-color:rgba(92,125,96,.3)}
+.btn-nav.admin:hover{background:rgba(92,125,96,.08)}
+
+/* ── LAYOUT ── */
+.page{max-width:1080px;margin:0 auto;padding:28px 20px 80px;
+  display:grid;grid-template-columns:220px 1fr;gap:20px}
+
+/* ── SIDEBAR ── */
+.sidebar{display:flex;flex-direction:column;gap:8px}
+.sidebar-section{font-family:monospace;font-size:.6rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--mut);padding:0 6px;margin:4px 0 2px}
+.sidebar-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:10px;cursor:pointer;
+  border:none;background:none;color:var(--mut);
+  font-family:var(--fb);font-size:.86rem;font-weight:500;
+  text-align:left;width:100%;transition:all .18s;text-decoration:none;
+}
+.sidebar-item:hover{background:rgba(61,43,45,.05);color:var(--ardoise)}
+.sidebar-item.active{background:rgba(196,113,122,.1);color:var(--cerise);font-weight:600}
+.sidebar-item .ico{width:20px;text-align:center;font-size:.95rem}
+.bloc-note-wrap{background:var(--blanc);border:1px solid var(--line);border-radius:12px;
+  padding:12px;margin-top:8px}
+.bloc-note-wrap label{font-size:.65rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--mut);display:block;margin-bottom:6px}
+.bloc-note-wrap textarea{width:100%;height:120px;background:var(--rose-light);
+  border:1px solid var(--line);border-radius:8px;padding:8px 10px;
+  font-family:var(--fb);font-size:.8rem;color:var(--ardoise);resize:none;outline:none}
+.note-saved{font-size:.7rem;color:var(--sauge);display:none;margin-top:4px}
+
+/* ── MAIN ── */
+.main{min-width:0}
+.view{display:none}
+.view.active{display:block}
+
+/* ── SEARCH BAR ── */
+.search-bar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.search-input{flex:1;min-width:200px;background:var(--blanc);border:1px solid var(--line);
+  border-radius:10px;padding:9px 14px;font-family:var(--fb);font-size:.88rem;
+  color:var(--ardoise);outline:none;transition:border-color .2s}
+.search-input:focus{border-color:var(--cerise)}
+.btn-add{background:var(--cerise);color:#fff;border:none;border-radius:10px;
+  padding:9px 18px;font-family:var(--fb);font-weight:600;font-size:.88rem;
+  cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-add:hover{background:var(--cerise-2)}
+
+/* ── PATIENTS GRID ── */
+.patients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.patient-card{
+  background:var(--blanc);border:1px solid var(--line);border-radius:14px;
+  padding:16px 18px;cursor:pointer;transition:all .2s;text-decoration:none;display:block;
+}
+.patient-card:hover{border-color:var(--cerise);transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(61,43,45,.08)}
+.patient-card.demo-card{border-left:3px solid var(--cerise)}
+.card-head{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.card-avatar{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--rose-deep),var(--cerise));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ff-disp);font-size:.95rem;color:#fff;font-weight:700;
+}
+.card-name{font-family:var(--ff-disp);font-size:1rem;color:var(--ardoise);margin-bottom:2px}
+.card-meta{font-size:.76rem;color:var(--mut)}
+.card-chips{display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:.7rem;padding:2px 8px;border-radius:999px;border:1px solid var(--line);
+  color:var(--mut);background:var(--rose-light)}
+.chip.aller{background:rgba(192,57,43,.07);border-color:rgba(192,57,43,.2);color:#A85860}
+.demo-badge{font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:999px;
+  background:rgba(196,113,122,.12);color:var(--cerise);border:1px solid rgba(196,113,122,.2)}
+
+/* ── AGENDA ── */
+.agenda-wrap{overflow-x:auto}
+.agenda-grid{display:grid;grid-template-columns:70px repeat(5,1fr);min-width:500px}
+.agenda-header{background:var(--rose-light);border-radius:8px 8px 0 0;margin-bottom:2px}
+.agenda-col-head{padding:8px 4px;font-size:.75rem;font-weight:600;color:var(--ardoise);text-align:center}
+.agenda-row{display:contents}
+.time-label{font-size:.72rem;color:var(--mut);text-align:right;padding:6px 8px 6px 0;
+  display:flex;align-items:center;justify-content:flex-end}
+.slot{border:1px solid var(--line-2);height:40px;padding:2px;background:var(--blanc);position:relative}
+.slot-filled{background:rgba(196,113,122,.12);border-left:3px solid var(--cerise);
+  border-radius:4px;padding:3px 5px;font-size:.7rem;color:var(--cerise);font-weight:600;height:100%;
+  overflow:hidden}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:40px;color:var(--mut);font-size:.88rem}
+.spinner-sm{display:inline-block;width:20px;height:20px;border:2px solid rgba(196,113,122,.2);
+  border-top-color:var(--cerise);border-radius:50%;animation:spin .7s linear infinite;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;z-index:999;
+  background:var(--ardoise);border-radius:10px;padding:11px 18px;
+  font-size:.84rem;color:#fff;transform:translateY(20px);opacity:0;
+  transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{background:var(--sauge)}
+.toast.err{background:#C0392B}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:48px 20px;color:var(--mut)}
+.empty-state .ico{font-size:2.5rem;margin-bottom:12px}
+.empty-state p{font-size:.88rem;line-height:1.6}
+
+/* ── BOTTOM NAV (mobile) ── */
+.bottom-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(254,250,249,.96);backdrop-filter:blur(12px);
+  border-top:1px solid var(--line);height:62px;padding:0 8px;
+  justify-content:space-around;align-items:center;
+}
+.bni{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  flex:1;padding:8px 4px;border:none;background:none;cursor:pointer;
+  color:var(--mut);font-family:var(--fb);font-size:.62rem;font-weight:600;
+  letter-spacing:.03em;min-height:44px;justify-content:center;
+  border-top:2px solid transparent;transition:color .18s;
+}
+.bni.active{color:var(--cerise);border-top-color:var(--cerise)}
+.bni-ico{font-size:1.25rem;line-height:1}
+
+@media(max-width:768px){
+  .page{grid-template-columns:1fr;padding-bottom:82px}
+  .sidebar{display:none}
+  nav{padding:0 16px}
+  .bottom-nav{display:flex}
+  .toast{bottom:74px}
+  .search-input{font-size:1rem}
+}
+</style>
+</head>
+<body>
+<div style="background:#fef9c3;color:#713f12;text-align:center;padding:6px;font-size:13px;font-weight:500;">
+  ⚡ Mode démonstration — Données fictives — <a href="../index.html" style="color:#713f12">Changer de mode</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div>
+    <span class="nav-brand">C<em>@</em>NDY<span class="nav-badge">Démo</span></span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-user">Dr <strong id="nav-prenom">—</strong></span>
+    <button class="btn-nav admin" id="btn-admin" style="display:none"
+      onclick="window.location.href='admin.html'">⚙️ Admin</button>
+    <button class="btn-nav" onclick="CandyAuth.logout()">Déconnexion</button>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">Navigation</div>
+    <button class="sidebar-item active" onclick="showView('patients',this,'bni-patients')">
+      <span class="ico">👥</span> Patients
+    </button>
+    <button class="sidebar-item" id="btn-agenda-nav" onclick="showView('agenda',this,'bni-agenda')">
+      <span class="ico">📆</span> Agenda
+    </button>
+    <div class="bloc-note-wrap" id="bloc-note-wrap" style="display:none">
+      <label>📝 Bloc-note</label>
+      <textarea id="bloc-note" placeholder="Notes rapides…" oninput="saveNote()"></textarea>
+      <div class="note-saved" id="note-saved">✓ Sauvegardé</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- VUE PATIENTS -->
+    <div class="view active" id="view-patients">
+      <div class="search-bar">
+        <input class="search-input" type="search" id="search-input"
+          placeholder="Rechercher un patient…" oninput="filtrerPatients()">
+        <button class="btn-add" id="btn-add-patient" style="display:none"
+          onclick="window.location.href='dossier.html?new=1'">+ Nouveau patient</button>
+      </div>
+      <div id="patients-list" class="patients-grid">
+        <div class="loading"><span class="spinner-sm"></span> Chargement…</div>
+      </div>
+    </div>
+
+    <!-- VUE AGENDA -->
+    <div class="view" id="view-agenda">
+      <div style="background:var(--blanc);border:1px solid var(--line);border-radius:14px;padding:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <h2 style="font-family:var(--ff-disp);font-size:1.1rem;color:var(--ardoise)">
+            📆 Agenda — Semaine du <span id="agenda-week-label">—</span>
+          </h2>
+          <div style="display:flex;gap:8px">
+            <button class="btn-nav" onclick="semainePrecedente()">← Préc.</button>
+            <button class="btn-nav" onclick="semaineAujourdhui()">Aujourd'hui</button>
+            <button class="btn-nav" onclick="semaineSuivante()">Suiv. →</button>
+          </div>
+        </div>
+        <div class="agenda-wrap">
+          <div class="agenda-grid" id="agenda-grid">
+            <div class="loading" style="grid-column:1/-1"><span class="spinner-sm"></span> Chargement…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav" aria-label="Navigation mobile">
+  <button class="bni active" id="bni-patients" onclick="showView('patients',null,'bni-patients')">
+    <span class="bni-ico">👥</span>Patients
+  </button>
+  <button class="bni" id="bni-agenda" onclick="showView('agenda',null,'bni-agenda')">
+    <span class="bni-ico">📆</span>Agenda
+  </button>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── INIT ──
+let currentPatients = [];
+let userRole        = null;
+let currentWeekOffset = 0;
+
+// ── Patients statiques pour mode démo public (sans auth Supabase) ──
+const DEMO_PATIENTS_STATIC = [
+  { nom:'Dupont',  prenom:'Marie',   age:'74 ans', sexe:'F', groupe:'A+',  allergie:'',            ville:'Lyon',     file:'patient-1-dupont-marie.html',  demo:'patient-1' },
+  { nom:'Bernard', prenom:'Luc',     age:'45 ans', sexe:'M', groupe:'B+',  allergie:'',            ville:'Lyon',     file:'patient-2-bernard-luc.html',   demo:'patient-2' },
+  { nom:'Lefèvre', prenom:'Sophie',  age:'32 ans', sexe:'F', groupe:'O+',  allergie:'',            ville:'Grenoble', file:'patient-3-lefevre-sophie.html', demo:'patient-3' },
+  { nom:'Moreau',  prenom:'Paul',    age:'67 ans', sexe:'M', groupe:'O+',  allergie:'Pénicilline', ville:'Grenoble', file:'patient-4-moreau-paul.html',   demo:'patient-4', main:true },
+  { nom:'Petit',   prenom:'Isabelle',age:'58 ans', sexe:'F', groupe:'AB-', allergie:'',            ville:'Paris',    file:'patient-5-petit-isabelle.html', demo:'patient-5' },
+];
+
+function renderDemoPatients() {
+  document.getElementById('patients-list').innerHTML = DEMO_PATIENTS_STATIC.map(p => `
+    <a class="patient-card demo-card" href="${p.file}" data-patient="${p.demo}">
+      <div class="card-head">
+        <div class="card-avatar">${p.prenom[0]}${p.nom[0]}</div>
+        <div>
+          <div class="card-name">${p.nom}, ${p.prenom}</div>
+          <div class="card-meta">${p.age} &middot; ${p.sexe==='F'?'Femme':'Homme'} &middot; 🩸 ${p.groupe}</div>
+          <span class="demo-badge">Démo</span>${p.main ? ' <span class="demo-badge" style="background:rgba(196,113,122,.2);border-color:rgba(196,113,122,.3)">⭐ Principal</span>' : ''}
+        </div>
+      </div>
+      <div class="card-chips">
+        <span class="chip">📍 ${p.ville}</span>
+        ${p.allergie ? `<span class="chip aller">⚠️ ${p.allergie}</span>` : ''}
+      </div>
+    </a>`).join('');
+}
+
+(async () => {
+  // Mode démo public : pas d'auth Supabase
+  if (localStorage.getItem('candy_demo_public') === '1') {
+    const _demoRole = localStorage.getItem('candy_demo_active_role') || 'medecin';
+    const _demoLabels = { medecin:'Dr. Démo', infirmier:'Infirmier Démo', secretaire:'Secrétaire Démo' };
+    document.getElementById('nav-prenom').textContent = _demoLabels[_demoRole] || 'Démo';
+    renderDemoPatients();
+    if (_demoRole === 'secretaire') {
+      setTimeout(() => showView('agenda', document.getElementById('btn-agenda-nav'), 'bni-agenda'), 0);
+    }
+    document.addEventListener('candy:demo-role-changed', (e) => {
+      const r = e.detail.role;
+      document.getElementById('nav-prenom').textContent = _demoLabels[r] || 'Démo';
+      if (r === 'secretaire') {
+        showView('agenda', document.getElementById('btn-agenda-nav'), 'bni-agenda');
+      } else {
+        const btn = document.querySelector('.sidebar-item[onclick*="\'patients\'"]');
+        showView('patients', btn, 'bni-patients');
+      }
+    });
+    return;
+  }
+
+  const ok = await CandyAuth.requireAuth();
+  if (!ok) return;
+
+  // Charger le rôle — avec retry si le profil n'est pas encore prêt
+  let retries = 0;
+  while (!userRole && retries < 3) {
+    userRole = await CandyAuth.getRole();
+    if (!userRole) await new Promise(r => setTimeout(r, 500));
+    retries++;
+  }
+
+  const profile = await CandyAuth.getProfile();
+
+  // Nom dans la nav
+  document.getElementById('nav-prenom').textContent =
+    profile?.prenom ? `${profile.prenom} ${profile.nom || ''}`.trim() : profile?.email || '—';
+
+  // Redirection admin_crm → admin.html
+  if (userRole === 'admin_crm') {
+    window.location.href = 'admin.html';
+    return;
+  }
+
+  // Bouton "Nouveau patient" visible seulement pour médecin/secrétaire
+  if (['medecin','secretaire'].includes(userRole)) {
+    document.getElementById('btn-add-patient').style.display = '';
+    document.getElementById('bloc-note-wrap').style.display  = '';
+    chargerBlocNote();
+  }
+
+  await chargerPatients();
+  genererAgenda();
+})();
+
+// ── NAVIGATION ──
+function showView(name, btn, bniId) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.bni').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name)?.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (bniId) document.getElementById(bniId)?.classList.add('active');
+  if (name === 'agenda') genererAgenda();
+}
+
+// ── CHARGER LES PATIENTS ──
+async function chargerPatients() {
+  const sb   = CandyAuth.getClient();
+  // S'assurer que userRole est chargé
+  const role = userRole || await CandyAuth.getRole();
+
+  // Construire la requête — pas de filtre actif qui pourrait bloquer
+  let query = sb.from('patients')
+    .select('id,nom,prenom,date_naissance,sexe,groupe_sanguin,allergies,is_demo,telephone,ville')
+    .order('nom');
+
+  // medecin_demo : uniquement les patients démo
+  // La RLS fait déjà le filtrage, on ajoute le filtre JS par sécurité
+  if (role === 'medecin_demo') {
+    query = query.eq('is_demo', true);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('[C@NDY] chargerPatients error:', error);
+    document.getElementById('patients-list').innerHTML =
+      '<div class="empty-state"><div class="ico">⚠️</div>' +
+      '<p>Erreur : ' + error.message + '<br>Rôle détecté : ' + (role || 'null') + '</p></div>';
+    return;
+  }
+
+  currentPatients = data || [];
+  renderPatients(currentPatients);
+}
+
+function patientUrl(p) {
+  if (!p.is_demo) return `dossier.html?id=${p.id}`;
+  const n  = (p.nom    || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,'-');
+  const pr = (p.prenom || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,'-');
+  const map = {
+    'dupont-marie':   'patient-1-dupont-marie.html',
+    'bernard-luc':    'patient-2-bernard-luc.html',
+    'lefevre-sophie': 'patient-3-lefevre-sophie.html',
+    'moreau-paul':    'patient-4-moreau-paul.html',
+    'petit-isabelle': 'patient-5-petit-isabelle.html',
+  };
+  return map[`${n}-${pr}`] || `dossier.html?id=${p.id}`;
+}
+
+function renderPatients(patients) {
+  const container = document.getElementById('patients-list');
+  if (!patients || !patients.length) {
+    container.innerHTML = `<div class="empty-state">
+      <div class="ico">👥</div>
+      <p>Aucun patient trouvé.</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = patients.map(p => {
+    const initiales = (p.prenom?.[0] || '') + (p.nom?.[0] || '');
+    const age       = p.date_naissance
+      ? Math.floor((Date.now() - new Date(p.date_naissance)) / 31557600000) + ' ans'
+      : '—';
+    // Parser allergies en sécurité — peut être object ou string
+    let allergies = [];
+    try {
+      allergies = Array.isArray(p.allergies)
+        ? p.allergies
+        : JSON.parse(p.allergies || '[]');
+    } catch(e) { allergies = []; }
+    const chips     = allergies.slice(0,2).map(a =>
+      `<span class="chip aller">⚠️ ${a.nom}</span>`
+    ).join('') + (allergies.length > 2 ? `<span class="chip">+${allergies.length-2}</span>` : '');
+
+    const n  = (p.nom    || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,'-');
+    const pr = (p.prenom || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,'-');
+    const demoKey = `${n}-${pr}`;
+    const _DEMO_KEY_MAP = {'dupont-marie':'patient-1','bernard-luc':'patient-2','lefevre-sophie':'patient-3','moreau-paul':'patient-4','petit-isabelle':'patient-5'};
+    const patientDataAttr = p.is_demo && _DEMO_KEY_MAP[demoKey] ? `data-patient="${_DEMO_KEY_MAP[demoKey]}"` : '';
+    return `<a class="patient-card${p.is_demo ? ' demo-card' : ''}"
+        href="${patientUrl(p)}" ${patientDataAttr}>
+      <div class="card-head">
+        <div class="card-avatar">${initiales}</div>
+        <div>
+          <div class="card-name">${p.nom}, ${p.prenom}</div>
+          <div class="card-meta">${age} · ${p.sexe === 'F' ? 'Femme' : 'Homme'} · 🩸 ${p.groupe_sanguin || '—'}</div>
+          ${p.is_demo ? '<span class="demo-badge">Démo</span>' : ''}
+        </div>
+      </div>
+      <div class="card-chips">
+        <span class="chip">📍 ${p.ville || '—'}</span>
+        ${chips}
+      </div>
+    </a>`;
+  }).join('');
+}
+
+function filtrerPatients() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  if (!q) { renderPatients(currentPatients); return; }
+  const filtered = currentPatients.filter(p =>
+    `${p.nom} ${p.prenom} ${p.ville || ''}`.toLowerCase().includes(q)
+  );
+  renderPatients(filtered);
+}
+
+// ── AGENDA ──
+function getLundi(offset = 0) {
+  const d  = new Date();
+  const day = d.getDay() || 7;
+  d.setDate(d.getDate() - day + 1 + offset * 7);
+  d.setHours(0,0,0,0);
+  return d;
+}
+
+async function genererAgenda() {
+  const lundi  = getLundi(currentWeekOffset);
+  const vendredi = new Date(lundi); vendredi.setDate(lundi.getDate() + 4);
+  document.getElementById('agenda-week-label').textContent =
+    lundi.toLocaleDateString('fr-FR', {day:'2-digit',month:'long'}) + ' au ' +
+    vendredi.toLocaleDateString('fr-FR', {day:'2-digit',month:'long',year:'numeric'});
+
+  const grid   = document.getElementById('agenda-grid');
+  const jours  = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi'];
+  const heures = ['08h00','09h00','10h00','11h00','12h00','14h00','15h00','16h00','17h00'];
+
+  // Charger les RDV de la semaine
+  const sb  = CandyAuth.getClient();
+  const { data: rdvs } = await sb.from('agenda')
+    .select('id,date_rdv,titre,type_rdv,patient_id')
+    .gte('date_rdv', lundi.toISOString())
+    .lte('date_rdv', new Date(vendredi.getTime() + 86399000).toISOString())
+    .order('date_rdv');
+
+  // Construire la grille
+  let html = '';
+  // Header
+  html += '<div style=""></div>';
+  jours.forEach((j, di) => {
+    const d = new Date(lundi); d.setDate(lundi.getDate() + di);
+    html += `<div class="agenda-col-head">${j}<br>
+      <span style="font-size:.7rem;color:var(--mut)">${d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})}</span>
+    </div>`;
+  });
+
+  // Lignes horaires
+  heures.forEach(h => {
+    html += `<div class="time-label">${h}</div>`;
+    for (let di = 0; di < 5; di++) {
+      const d = new Date(lundi); d.setDate(lundi.getDate() + di);
+      const dateStr = d.toISOString().slice(0,10);
+      const hNum    = parseInt(h.replace('h',''));
+      const rdv     = (rdvs || []).find(r => {
+        const rd = new Date(r.date_rdv);
+        return rd.toISOString().slice(0,10) === dateStr && rd.getHours() === hNum;
+      });
+      if (rdv) {
+        const nom = rdv.titre || '—';
+        html += `<div class="slot"><div class="slot-filled">${nom}</div></div>`;
+      } else {
+        html += '<div class="slot"></div>';
+      }
+    }
+  });
+
+  grid.innerHTML = html;
+}
+
+function semainePrecedente() { currentWeekOffset--; genererAgenda(); }
+function semaineAujourdhui() { currentWeekOffset = 0; genererAgenda(); }
+function semaineSuivante()   { currentWeekOffset++; genererAgenda(); }
+
+// ── BLOC-NOTE (Supabase) ──
+async function chargerBlocNote() {
+  const sb = CandyAuth.getClient();
+  const user = await CandyAuth.getUser();
+  // On utilise les notes sans patient_id pour le bloc-note global
+  const { data } = await sb.from('notes_suivi')
+    .select('contenu')
+    .eq('auteur_id', user.id)
+    .is('patient_id', null)
+    .maybeSingle();
+  if (data?.contenu) document.getElementById('bloc-note').value = data.contenu;
+}
+
+let _noteTimer;
+async function saveNote() {
+  clearTimeout(_noteTimer);
+  _noteTimer = setTimeout(async () => {
+    const sb      = CandyAuth.getClient();
+    const user    = await CandyAuth.getUser();
+    const contenu = document.getElementById('bloc-note').value;
+    await sb.from('notes_suivi').upsert({
+      auteur_id: user.id, patient_id: null, contenu,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'patient_id,auteur_id' });
+    const s = document.getElementById('note-saved');
+    s.style.display = 'inline';
+    setTimeout(() => s.style.display = 'none', 2000);
+  }, 800);
+}
+
+// ── TOAST ──
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

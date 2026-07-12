@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>C@NDY &mdash; Médicaments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="mock-data.js"></script>
+<script src="supabase.mock.js"></script>
+<script src="config.js"></script>
+<script src="auth.js"></script>
+<style>
+:root{--rose:#F2D7D9;--rose-deep:#E8BFC2;--rose-light:#FBF0F1;--cerise:#C4717A;--cerise-2:#A85860;--blanc:#FEFAF9;--ardoise:#3D2B2D;--ardoise-2:#5C3F42;--mut:#8C6A6D;--sauge:#5C7D60;--line:rgba(61,43,45,.1);--line-2:rgba(61,43,45,.06);--alert:#C0392B;--ff-disp:"DM Serif Display",serif;--fb:"Inter",sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--rose-light);color:var(--ardoise);line-height:1.5;-webkit-font-smoothing:antialiased}
+nav{position:sticky;top:0;z-index:200;background:rgba(254,250,249,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px}
+.nav-brand{font-family:var(--ff-disp);font-size:1.2rem;color:var(--ardoise);text-decoration:none}
+.nav-badge{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--cerise);color:#fff;padding:3px 8px;border-radius:999px;margin-left:6px}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-back{font-size:.85rem;color:var(--mut);text-decoration:none}
+.nav-back:hover{color:var(--cerise)}
+.page{max-width:980px;margin:0 auto;padding:32px 24px 80px}
+.search-wrap{background:var(--blanc);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:24px}
+.search-input{width:100%;background:var(--rose-light);border:1.5px solid var(--line);border-radius:10px;padding:12px 16px;font-family:var(--fb);font-size:.95rem;color:var(--ardoise);outline:none;transition:border-color .2s}
+.search-input:focus{border-color:var(--cerise)}
+.search-hint{font-size:.75rem;color:var(--mut);margin-top:8px}
+.patient-ctx{background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.2);border-radius:8px;padding:9px 14px;margin-top:10px;font-size:.8rem;color:var(--alert);display:none}
+.patient-ctx.visible{display:block}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.med-card{background:var(--blanc);border:1px solid var(--line);border-radius:12px;padding:16px 18px;cursor:pointer;transition:all .2s}
+.med-card:hover{border-color:var(--cerise);box-shadow:0 4px 16px rgba(61,43,45,.07)}
+.med-card.expanded{border-color:var(--cerise)}
+.med-nom{font-family:var(--ff-disp);font-size:1rem;color:var(--ardoise);margin-bottom:4px}
+.med-dci{font-size:.77rem;color:var(--mut);margin-bottom:6px}
+.med-classe{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--cerise);background:rgba(196,113,122,.1);border-radius:4px;padding:2px 8px;display:inline-block}
+.med-detail{display:none;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-2)}
+.med-card.expanded .med-detail{display:block}
+.detail-row{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+.detail-lbl{font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.detail-val{font-size:.82rem;color:var(--ardoise)}
+.alert-badge{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;padding:6px 10px;border-radius:7px;margin-top:6px}
+.alert-badge.critique{background:rgba(192,57,43,.1);color:var(--alert);border:1px solid rgba(192,57,43,.25)}
+.alert-badge.majeure{background:rgba(255,165,0,.1);color:#8a6000;border:1px solid rgba(255,165,0,.3)}
+.alert-badge.surveillance{background:rgba(255,210,0,.1);color:#7a6000;border:1px solid rgba(255,210,0,.4)}
+.alert-badge.ok{background:rgba(92,125,96,.1);color:var(--sauge);border:1px solid rgba(92,125,96,.25)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--mut)}
+.empty-ico{font-size:3rem;margin-bottom:16px}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.tag{font-size:.72rem;padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--mut);background:var(--blanc);cursor:pointer;transition:all .18s}
+.tag:hover,.tag.active{background:rgba(196,113,122,.1);border-color:var(--cerise);color:var(--cerise)}
+@media(max-width:600px){.results-grid{grid-template-columns:1fr}.page{padding:20px 14px 60px}nav{padding:0 14px}}
+</style>
+</head>
+<body>
+<div style="background:#fef9c3;color:#713f12;text-align:center;padding:6px;font-size:13px;font-weight:500;">
+  ⚡ Mode démonstration — Données fictives — <a href="../index.html" style="color:#713f12">Changer de mode</a>
+</div>
+<nav>
+  <a href="patients.html" class="nav-brand">C<span style="color:var(--cerise)">@</span>NDY<span class="nav-badge">D&eacute;mo</span></a>
+  <div class="nav-right">
+    <span style="font-size:.9rem;color:var(--mut)">&#128138; M&eacute;dicaments</span>
+    <a href="javascript:history.back()" class="nav-back">&larr; Retour au dossier</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="search-wrap">
+    <input class="search-input" type="search" id="med-search"
+      placeholder="Rechercher un médicament (nom, DCI, classe)…"
+      oninput="searchMeds(this.value)" autocomplete="off" autofocus>
+    <div class="search-hint">Essayez : <strong>amoxicilline</strong>, <strong>metformine</strong>, <strong>statine</strong>, <strong>AINS</strong>, <strong>bisoprolol</strong>…</div>
+    <div id="patient-context" class="patient-ctx"></div>
+  </div>
+
+  <!-- Filtres par classe -->
+  <div class="tag-row" id="class-tags"><!-- rempli par JS --></div>
+
+  <!-- Résultats -->
+  <div id="med-results" class="results-grid">
+    <div class="empty-state">
+      <div class="empty-ico">&#128138;</div>
+      <p>Saisissez un nom de m&eacute;dicament, une DCI ou une classe th&eacute;rapeutique.</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="prescription-safety.js"></script>
+<script>
+// Récupérer patientId depuis l'URL (?from=patient-4)
+const _urlParams   = new URLSearchParams(window.location.search);
+const _patientId   = _urlParams.get('from') || null;
+let   _activeClass = null;
+
+// Contexte patient
+(function() {
+  const ctxEl = document.getElementById('patient-context');
+  if (!_patientId || !ctxEl) return;
+  const profile = DEMO_PATIENT_PROFILES[_patientId];
+  if (!profile) return;
+  const warnings = [];
+  if (profile.allergies.length) warnings.push(`&#9888;&#65039; Allergie : ${profile.allergies.map(a=>a.replace(/_/g,' ')).join(', ')}`);
+  if (profile.traitements.length) warnings.push(`&#128138; Traitement en cours : ${profile.traitements.join(', ')}`);
+  if (warnings.length) {
+    ctxEl.innerHTML = warnings.join(' &nbsp;&bull;&nbsp; ');
+    ctxEl.classList.add('visible');
+  }
+})();
+
+// Tags de classe
+(function() {
+  const classes  = [...new Set(DEMO_MEDICATIONS.map(m => m.classe))].sort();
+  const tagsEl   = document.getElementById('class-tags');
+  if (!tagsEl) return;
+  tagsEl.innerHTML = classes.map(c =>
+    `<button class="tag" onclick="filterClass('${c}',this)">${c}</button>`
+  ).join('');
+})();
+
+function filterClass(cls, btn) {
+  if (_activeClass === cls) {
+    _activeClass = null;
+    document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+    renderMeds(DEMO_MEDICATIONS);
+  } else {
+    _activeClass = cls;
+    document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    renderMeds(DEMO_MEDICATIONS.filter(m => m.classe === cls));
+  }
+  document.getElementById('med-search').value = '';
+}
+
+function searchMeds(query) {
+  _activeClass = null;
+  document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+  if (!query.trim()) {
+    document.getElementById('med-results').innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="empty-ico">&#128138;</div>
+        <p>Saisissez un nom de m&eacute;dicament, une DCI ou une classe th&eacute;rapeutique.</p>
+      </div>`;
+    return;
+  }
+  const results = findMedication(query);
+  renderMeds(results);
+}
+
+function renderMeds(meds) {
+  const container = document.getElementById('med-results');
+  if (!meds.length) {
+    container.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-ico">&#128269;</div><p>Aucun m&eacute;dicament trouv&eacute;.</p></div>`;
+    return;
+  }
+  container.innerHTML = meds.map((m, i) => {
+    const safetyResult = _patientId ? checkPrescriptionSafety(m.dci, _patientId) : null;
+    let badgeHtml = '';
+    if (safetyResult) {
+      if (safetyResult.level === 'critique') {
+        badgeHtml = `<div class="alert-badge critique">🔴 Contre-indication critique — ${safetyResult.message.replace(/🔴 CONTRE-INDICATION CRITIQUE — /,'').split('.')[0]}</div>`;
+      } else if (safetyResult.level === 'majeure') {
+        badgeHtml = `<div class="alert-badge majeure">🟠 Interaction majeure</div>`;
+      } else if (safetyResult.level === 'surveillance') {
+        badgeHtml = `<div class="alert-badge surveillance">🟡 Surveillance requise</div>`;
+      } else {
+        badgeHtml = `<div class="alert-badge ok">✅ Aucune alerte</div>`;
+      }
+    }
+    return `
+      <div class="med-card" id="med-${i}" onclick="toggleMed(${i})">
+        <div class="med-nom">${m.nom}</div>
+        <div class="med-dci">${m.dci.replace(/_/g,' ')}</div>
+        <span class="med-classe">${m.classe}</span>
+        ${badgeHtml}
+        <div class="med-detail">
+          <div class="detail-row">
+            <span class="detail-lbl">DCI</span>
+            <span class="detail-val">${m.dci.replace(/_/g,' ')}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-lbl">Classe th&eacute;rapeutique</span>
+            <span class="detail-val">${m.classe}</span>
+          </div>
+          ${m.ci.length ? `<div class="detail-row">
+            <span class="detail-lbl">&#128683; Contre-indications</span>
+            <span class="detail-val">${m.ci.map(c=>c.replace(/_/g,' ')).join(', ')}</span>
+          </div>` : ''}
+          ${m.interactions.length ? `<div class="detail-row">
+            <span class="detail-lbl">&#9888;&#65039; Interactions principales</span>
+            <span class="detail-val">${m.interactions.map(i=>i.replace(/_/g,' ')).join(', ')}</span>
+          </div>` : ''}
+          ${m.surveillance.length ? `<div class="detail-row">
+            <span class="detail-lbl">&#128202; Surveillance</span>
+            <span class="detail-val">${m.surveillance.map(s=>s.replace(/_/g,' ')).join(', ')}</span>
+          </div>` : ''}
+          ${_patientId && safetyResult?.message ? `<div class="detail-row">
+            <span class="detail-lbl">Analyse pour ce patient</span>
+            <span class="detail-val">${safetyResult.message}</span>
+          </div>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleMed(i) {
+  const card = document.getElementById('med-' + i);
+  if (!card) return;
+  const wasOpen = card.classList.contains('expanded');
+  document.querySelectorAll('.med-card.expanded').forEach(c => c.classList.remove('expanded'));
+  if (!wasOpen) card.classList.add('expanded');
+}
+
+// Auth check (bypassé en mode démo public)
+(async () => {
+  if (localStorage.getItem('candy_demo_public') !== '1') {
+    const ok = await CandyAuth.requireAuth();
+    if (!ok) return;
+  }
+  if (_patientId) renderMeds(DEMO_MEDICATIONS);
+})();
+</script>
+</body>
+</html>

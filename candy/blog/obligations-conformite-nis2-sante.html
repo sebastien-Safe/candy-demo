@@ -1,0 +1,166 @@
+<!-- obligations-conformite-nis2-sante.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conformité NIS2 : Obligations pour les Soins de Santé | S@FE Candy</title>
+    <meta name="description" content="Comprendre les obligations NIS2 pour les établissements de santé. Mesures de sécurité, notification d'incidents et gouvernance.">
+    <meta name="keywords" content="NIS2, directive européenne, santé, conformité, sécurité, gouvernance, ANSSI">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Conformité NIS2 : Obligations pour les Soins de Santé">
+    <meta property="og:description" content="La directive NIS2 impose de nouvelles exigences de cybersécurité aux acteurs de la santé. Découvrez ce qui change.">
+    <meta property="og:url" content="https://www.safe-digitalisation.fr/blog/obligations-conformite-nis2-sante">
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Obligations de conformité NIS2 pour les entités de soins de santé",
+      "author": { "@type": "Organization", "name": "S@FE" },
+      "datePublished": "2026-06-18",
+      "mainEntityOfPage": "https://www.safe-digitalisation.fr/blog/obligations-conformite-nis2-sante"
+    }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-teal: #00695c;
+            --secondary-teal: #e0f2f1;
+            --accent-teal: #004d40;
+            --text-dark: #333333;
+            --white: #ffffff;
+            --bg-soft: #f0fdfa;
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-sans: 'DM Sans', sans-serif;
+            --border-radius: 16px;
+        }
+        body { font-family: var(--font-sans); background-color: var(--bg-soft); color: var(--text-dark); margin: 0; line-height: 1.7; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { background: var(--white); box-shadow: 0 2px 15px rgba(0, 105, 92, 0.05); padding: 1rem 0; position: sticky; top: 0; z-index: 1000; }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 700; color: var(--primary-teal); text-decoration: none; }
+        .nav-links a { color: var(--text-dark); text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--primary-teal); }
+        .breadcrumb { padding: 1rem 0; font-size: 0.9rem; color: #666; }
+        .breadcrumb a { color: var(--primary-teal); text-decoration: none; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 320px; gap: 40px; margin-top: 30px; }
+        article { background: var(--white); padding: 40px; border-radius: var(--border-radius); box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid rgba(0, 105, 92, 0.1); }
+        h1 { font-family: var(--font-serif); font-size: 2.8rem; color: var(--accent-teal); margin-bottom: 1rem; line-height: 1.1; }
+        .meta-tags { display: flex; gap: 15px; margin-bottom: 2rem; font-size: 0.9rem; color: #666; }
+        .badge { background: var(--secondary-teal); color: var(--accent-teal); padding: 4px 12px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+        h2 { font-family: var(--font-serif); font-size: 1.8rem; color: var(--primary-teal); margin-top: 2.5rem; border-bottom: 2px solid var(--secondary-teal); padding-bottom: 10px; }
+        p { margin-bottom: 1.5rem; font-size: 1.1rem; }
+        .info-box { background: var(--secondary-teal); border-left: 5px solid var(--primary-teal); padding: 20px; border-radius: 8px; margin: 2rem 0; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; }
+        aside { position: sticky; top: 100px; height: fit-content; }
+        .sidebar-widget { background: var(--white); padding: 25px; border-radius: var(--border-radius); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; border-top: 4px solid var(--primary-teal); }
+        .sidebar-title { font-family: var(--font-serif); font-size: 1.4rem; color: var(--accent-teal); margin-bottom: 15px; }
+        .cta-btn { display: block; background: linear-gradient(135deg, var(--primary-teal) 0%, var(--accent-teal) 100%); color: var(--white); text-align: center; padding: 15px; border-radius: 30px; text-decoration: none; font-weight: 700; margin-top: 15px; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(0, 105, 92, 0.2); }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 105, 92, 0.3); }
+        .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+        .tag { background: var(--bg-soft); color: var(--primary-teal); padding: 5px 10px; border-radius: 15px; font-size: 0.85rem; text-decoration: none; }
+        footer { background: var(--accent-teal); color: var(--white); text-align: center; padding: 40px 0; margin-top: 60px; }
+        @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } aside { position: static; order: 2; margin-top: 30px; } article { order: 1; } h1 { font-size: 2.2rem; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container nav-content">
+        <a href="/" class="logo">S@FE <span style="font-family:var(--font-sans); font-weight:400; color:#555">Candy</span></a>
+        <nav class="nav-links">
+            <a href="/">Accueil</a>
+            <a href="/blog">Blog</a>
+            <a href="/contact">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <div class="breadcrumb">
+        <a href="/">Accueil</a> / <a href="/blog">Blog</a> / NIS2
+    </div>
+
+    <div class="grid-layout">
+        <article>
+            <div class="meta-tags">
+                <span class="badge">Réglementation</span>
+                <span>NIS2 • Santé • Conformité</span>
+                <span>• 5 min de lecture</span>
+            </div>
+            <h1>Obligations de conformité NIS2 pour les entités de soins de santé</h1>
+            
+            <p>La directive <strong>NIS2</strong> (Network and Information Security 2) est entrée en vigueur en 2024 et doit être transposée dans les droits nationaux d'ici 2026. Elle étend considérablement les obligations de cybersécurité aux acteurs du secteur de la santé, qu'ils soient essentiels ou importants.</p>
+
+            <div class="info-box">
+                <strong>🔍 Point clé :</strong> Les établissements de santé, les laboratoires d'analyses et les prestataires de santé numériques sont désormais directement concernés par la NIS2.
+            </div>
+
+            <h2>1. Qui est concerné ?</h2>
+            <p>Tout établissement de santé (hôpital, clinique, cabinet regroupé) et tout prestataire de services numériques de santé (comme C@NDY) qui traite des données sensibles est soumis à la NIS2.</p>
+            <ul>
+                <li><strong>Entités Essentielles :</strong> Grands hôpitaux, établissements de soins critiques.</li>
+                <li><strong>Entités Importantes :</strong> Cabinets regroupés, laboratoires, prestataires de santé numériques.</li>
+            </ul>
+
+            <h2>2. Les obligations principales</h2>
+            <p>La NIS2 impose des mesures de sécurité techniques et organisationnelles (MSTO) strictes :</p>
+            <ul>
+                <li><strong>Gestion des risques :</strong> Analyse de risque, politique de sécurité, gestion des incidents.</li>
+                <li><strong>Notification d'incidents :</strong> Obligation de signaler tout incident significatif à l'ANSI (Agence du Numérique en Santé) et au CERT-Santé dans des délais stricts (alerte précoce sous 24h, rapport final sous 72h).</li>
+                <li><strong>Continuité d'activité :</strong> Plans de reprise et de continuité (PRA/PCA) testés régulièrement.</li>
+                <li><strong>Responsabilité de la direction :</strong> Les dirigeants peuvent être tenus personnellement responsables en cas de négligence.</li>
+            </ul>
+
+            <h2>3. Comment C@NDY vous aide ?</h2>
+            <p>C@NDY intègre nativement les fonctionnalités requises par la NIS2 : journalisation complète des accès, chiffrement des données, gestion des incidents et conformité HDS. Il sert de socle technique pour votre conformité.</p>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="https://sebastien-safe.github.io/candy/Candy/" class="cta-btn">Se mettre en conformité NIS2</a>
+            </div>
+        </article>
+
+        <aside>
+            <div class="sidebar-widget">
+                <h3 class="sidebar-title">Restez informé</h3>
+                <p>Ne manquez pas les mises à jour réglementaires.</p>
+                <a href="https://sebastien-safe.github.io/candy/Candy/" class="cta-btn">Essayer C@NDY</a>
+            </div>
+
+            <div class="sidebar-widget">
+                <h3 class="sidebar-title">À lire aussi</h3>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="color:var(--text-dark); text-decoration:none;">📄 Ransomware : PRA hospitalier</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="color:var(--text-dark); text-decoration:none;">🔒 Sécurité des dispositifs IoMT</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-widget">
+                <h3 class="sidebar-title">Tags</h3>
+                <div class="tag-cloud">
+                    <a href="#" class="tag">NIS2</a>
+                    <a href="#" class="tag">Santé</a>
+                    <a href="#" class="tag">Conformité</a>
+                    <a href="#" class="tag">ANSI</a>
+                </div>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2026 S@FE Digitalisation - Tous droits réservés.</p>
+        <p><a href="#" style="color:white; text-decoration:underline;">Mentions Légales</a> | <a href="#" style="color:white; text-decoration:underline;">Politique de Confidentialité</a></p>
+    </div>
+</footer>
+
+</body>
+</html>
