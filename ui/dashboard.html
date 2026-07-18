@@ -1449,21 +1449,13 @@
   </footer>
 
   <!--
-    NOTE : Aucun JavaScript externe. Ce script inline minimal sert uniquement
-    à afficher la date courante. La logique d'habilitation est entièrement
-    côté serveur (RLS PostgreSQL). Les états "verrouillé" sont illustratifs ;
-    en production, les modules non autorisés ne sont simplement pas rendus.
+    NOTE : script minimal externalisé (CSP script-src 'self', pas d'inline)
+    sert uniquement à afficher la date courante. La logique d'habilitation
+    est entièrement côté serveur (RLS PostgreSQL). Les états "verrouillé"
+    sont illustratifs ; en production, les modules non autorisés ne sont
+    simplement pas rendus.
   -->
-  <script>
-    (function() {
-      var el = document.getElementById('current-date');
-      if (el) {
-        el.textContent = new Date().toLocaleDateString('fr-FR', {
-          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-        });
-      }
-    })();
-  </script>
+  <script src="../frontend/src/pages/dashboard-mockup.page.js"></script>
 
 </body>
 </html>
