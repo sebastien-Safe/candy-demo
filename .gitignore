@@ -1,1 +1,30 @@
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Variables d'environnement
+.env
+.env.save
+.env.local
+.env.*.local
+!.env.example
+
+# Sauvegardes de base de données (peuvent contenir des données de santé)
+backups/
+
+# Backend Node.js
+node_modules/
+*.pem
+*.p12
+*.pfx
+
+# Logs
+*.log
+
+# Éditeurs
+.vscode/
+.idea/
+
+# Clever Cloud CLI (lien local vers l'app, spécifique à la machine)
+.clever.json

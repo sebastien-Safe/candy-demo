@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(clever *)",
+      "Bash(psql *)",
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(node *)",
+      "Bash(docker run *)",
+      "Bash(docker exec *)",
+      "Bash(git commit -m ' *)",
+      "Read(//tmp/**)",
+      "Bash(node -c server.js)",
+      "Bash(node -c middleware/auth.js)",
+      "Bash(node -c routes/auth.js)",
+      "Bash(node -c config/authCookie.js)",
+      "Bash(timeout 3 node server.js)"
+    ]
+  }
+}
